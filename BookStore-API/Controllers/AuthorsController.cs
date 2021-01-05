@@ -40,10 +40,10 @@ namespace BookStore_API.Controllers
         {
             try
             {
-                _logger.LogInfo($"{By()}Attempted GetAuthors");
+                Info($"Attempted GetAuthors");
                 var authors = await _authorRepository.FindAll();
                 var response = _mapper.Map<IList<AuthorDTO>>(authors);
-                _logger.LogInfo($"{By()}Successfully got all authors");
+                Info($"Successfully got all authors");
                 return Ok(response);
             }
             catch (Exception e)
@@ -65,15 +65,15 @@ namespace BookStore_API.Controllers
         {
             try
             {
-                _logger.LogInfo($"{By()}Attempted GetAuthor({id})");
+                Info($"Attempted GetAuthor({id})");
                 var author = await _authorRepository.FindById(id);
                 if (author == null)
                 {
-                    _logger.LogWarn($"{By()}No author {id}");
+                    Warn($"No author {id}");
                     return NotFound();
                 }
                 var response = _mapper.Map<AuthorDTO>(author);
-                _logger.LogInfo($"{By()}Successfully got author {id}");
+                Info($"Successfully got author {id}");
                 return Ok(response);
             }
             catch (Exception e)
@@ -95,22 +95,22 @@ namespace BookStore_API.Controllers
         {
             try
             {
-                _logger.LogInfo($"{By()}Author creation attempted");
+                Info($"Author creation attempted");
                 if (authorDTO == null)
                 {
-                    _logger.LogWarn($"{By()}Empty request was submitted");
+                    Warn($"Empty request was submitted");
                     return BadRequest(ModelState);
                 }
                 if (!ModelState.IsValid)
                 {
-                    _logger.LogWarn($"{By()}Invalid modelstate '{ModelState}'");
+                    Warn($"Invalid modelstate '{ModelState}'");
                     return BadRequest(ModelState);
                 }
                 var author = _mapper.Map<Author>(authorDTO);
                 var isSuccess = await _authorRepository.Create(author);
                 if (!isSuccess)
                     return InternalError($"Author {author} creation failed.");
-                _logger.LogInfo($"{By()}Author created");
+                Info($"Author created");
                 return Created("Create", new { author });
 
             }
@@ -135,22 +135,22 @@ namespace BookStore_API.Controllers
         {
             try
             {
-                _logger.LogInfo($"{By()}Author update attempted");
+                Info($"Author update attempted");
                 if (id < 1 || authorDTO == null || id != authorDTO.id)
                 {
-                    _logger.LogWarn($"{By()}Empty request or id < 1 was submitted");
+                    Warn($"Empty request or id < 1 was submitted");
                     return BadRequest(ModelState);
                 }
                 if (!ModelState.IsValid)
                 {
-                    _logger.LogWarn($"{By()}Invalid modelstate '{ModelState}'");
+                    Warn($"Invalid modelstate '{ModelState}'");
                     return BadRequest(ModelState);
                 }
                 var author = _mapper.Map<Author>(authorDTO);
                 var isSuccess = await _authorRepository.Update(author);
                 if (!isSuccess)
                     return InternalError($"Author {id} '{author}' update failed.");
-                _logger.LogInfo($"{By()}Author updated");
+                Info($"Author updated");
                 return NoContent();
             }
             catch (Exception e)
@@ -168,28 +168,28 @@ namespace BookStore_API.Controllers
         {
             try
             {
-                _logger.LogInfo($"{By()}Author delete attempted");
+                Info($"Author delete attempted");
                 if (id < 1 )
                 {
-                    _logger.LogWarn($"{By()}id < 1 was submitted");
+                    Warn($"id {id} < 1 was submitted");
                     return BadRequest(ModelState);
                 }
                 var doesExist = await _authorRepository.doesExist(id);
                 if (!doesExist)
                 {
-                    _logger.LogWarn($"{By()}Unknown author {id}");
+                    Warn($"Unknown author {id}");
                     return NotFound();
                 }
                 var author = await _authorRepository.FindById(id);
                 if (author == null)
                 {
-                    _logger.LogWarn($"{By()}Should not occur after previous check!");
+                    Warn($"Should not occur after previous check!");
                     return NotFound();
                 }
                 var isSuccess = await _authorRepository.Delete(author);
                 if (!isSuccess)
                     return InternalError($"{By()}Author {id} delete failed.");
-                _logger.LogInfo($"{By()}Author deleted");
+                Info($"Author deleted");
                 return NoContent();
 
             }
@@ -199,15 +199,27 @@ namespace BookStore_API.Controllers
             }
 
         }
+        private void Error(string message)
+        {
+            _logger.LogError($"{By()}: {message}");
+        }
+        private void Info(string message)
+        {
+            _logger.LogInfo($"{By()}: {message}");
+        }
+        private void Warn(string message)
+        {
+            _logger.LogWarn($"{By()}: {message}");
+        }
         private string By()
         {
             var controller = ControllerContext.ActionDescriptor.ControllerName;
             var action = ControllerContext.ActionDescriptor.ActionName;
-            return $"{controller} - {action}: ";
+            return $"{controller} - {action}";
         }
         private ObjectResult InternalError(Exception e)
         {
-            _logger.LogError($"{By()}{e.Message} - {e.InnerException}");
+            _logger.LogError($"{By()}: {e.Message} - {e.InnerException}");
             return StatusCode(500, "Something went wrong. Please contact the Administrator");
         }
         private ObjectResult InternalError(string message)
