@@ -137,7 +137,7 @@ namespace BookStore_API.Controllers
                 Info($"Book update attempted");
                 if (id < 1 || bookDTO == null || id != bookDTO.id)
                 {
-                    Warn($"Empty request or id < 1 was submitted");
+                    Warn($"Empty request, id < 1, or id in url != id in payload");
                     return BadRequest(ModelState);
                 }
                 if (!ModelState.IsValid)
@@ -189,7 +189,7 @@ namespace BookStore_API.Controllers
                 var isSuccess = await _bookRepository.Delete(book);
                 if (!isSuccess)
                     return InternalError($"{By()}Book {id} delete failed.");
-                Info($"Book deleted");
+                Info($"Book {id} deleted");
                 return NoContent();
 
             }
