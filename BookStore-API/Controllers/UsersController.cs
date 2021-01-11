@@ -12,6 +12,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Http;
 
 namespace BookStore_API.Controllers
 {
@@ -42,6 +43,9 @@ namespace BookStore_API.Controllers
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Login([FromBody] UserDTO userDTO)
         {
             try

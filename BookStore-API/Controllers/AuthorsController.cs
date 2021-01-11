@@ -163,6 +163,11 @@ namespace BookStore_API.Controllers
             }
 
         }
+         /// <summary>
+         /// This endpoint deletes an Author
+         /// </summary>
+         /// <param name="id"></param>
+         /// <returns></returns>
         [HttpDelete("{id}")]
         [Authorize(Roles = "Administrator")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

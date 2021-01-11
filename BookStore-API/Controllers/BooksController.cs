@@ -89,7 +89,7 @@ namespace BookStore_API.Controllers
         /// <param name="bookDTO"></param>
         /// <returns></returns>
         [HttpPost]
-        [Authorize] // overall requirement, overruled by any statement at endpoint level
+        [Authorize(Roles = "Administrator")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -130,6 +130,7 @@ namespace BookStore_API.Controllers
         /// <param name="bookDTO"></param>
         /// <returns></returns>
         [HttpPatch("{id}")]
+        [Authorize(Roles = "Administrator")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -163,7 +164,14 @@ namespace BookStore_API.Controllers
             }
 
         }
+
+        /// <summary>
+        /// Endpoint to delete a book
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Administrator")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
