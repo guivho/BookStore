@@ -91,10 +91,10 @@ namespace BookStore_API.Controllers
                 signingCredentials: credentials);
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-        private void Error(string message)
-        {
-            _logger.LogError($"{By()}: {message}");
-        }
+        //private void Error(string message)
+        //{
+        //    _logger.LogError($"{By()}: {message}");
+        //}
         private void Info(string message)
         {
             _logger.LogInfo($"{By()}: {message}");
@@ -114,12 +114,11 @@ namespace BookStore_API.Controllers
             _logger.LogError($"{By()}: {e.Message} - {e.InnerException}");
             return StatusCode(500, "Something went wrong. Please contact the Administrator");
         }
-        private ObjectResult InternalError(string message)
-        {
-            _logger.LogError(message);
-            return StatusCode(500, "Something went wrong. Please contact the Administrator");
-
-        }
+        //private ObjectResult InternalError(string message)
+        //{
+        //    _logger.LogError(message);
+        //    return StatusCode(500, "Something went wrong. Please contact the Administrator");
+        //}
     }
 
 }
