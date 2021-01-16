@@ -50,7 +50,7 @@ namespace BookStore_API.Controllers
         {
             try
             {
-                var userName = userDTO.Username;
+                var userName = userDTO.EmailAddress;
                 var password = userDTO.Password;
                 var result = await _signInManager.PasswordSignInAsync(userName, password, false, false);
                 Info($"User({userName}), pw({password})");
