@@ -37,7 +37,7 @@ namespace BookStore_UI.Service
             };
             var client = _httpClientFactory.CreateClient();
             HttpResponseMessage response = await client.SendAsync(request);
-            if(!response.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode)
             {
                 return false;
             }
