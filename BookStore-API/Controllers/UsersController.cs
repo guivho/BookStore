@@ -37,10 +37,53 @@ namespace BookStore_API.Controllers
         }
 
         /// <summary>
+        /// Endpoint to register a new user
+        /// </summary>
+        /// <param name="userDTO"></param>
+        /// <returns></returns>
+        [Route("register")] // differentiate between login and register posts
+        [AllowAnonymous]
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Register([FromBody] UserDTO userDTO)
+        {
+            try
+            {
+                var emailAddress = userDTO.EmailAddress;
+                var password = userDTO.Password;
+                var user = new IdentityUser
+                {
+                    Email = emailAddress,
+                    UserName = emailAddress
+                };
+                var result = await _userManager.CreateAsync(user, password);
+                Info($"User({emailAddress}), pw({password})");
+                if (!result.Succeeded)
+                {
+                    var msg = $"Failed to register \"{emailAddress}\" with pw \"{password}\": ";
+                    foreach (var error in result.Errors)
+                    {
+                        msg += $" {error.Description};";
+                    }
+                    return InternalError(msg);
+                }
+                Info("Succeeded");
+                return Ok(new { result.Succeeded });
+            }
+            catch (System.Exception e)
+            {
+                return InternalError(e);
+            }
+        }
+
+        /// <summary>
         /// User Login Endpoint
         /// </summary>
         /// <param name="userDTO"></param>
         /// <returns></returns>
+        [Route("login")] // differentiate between login and register posts
         [AllowAnonymous]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -50,13 +93,13 @@ namespace BookStore_API.Controllers
         {
             try
             {
-                var userName = userDTO.EmailAddress;
+                var emailAddress = userDTO.EmailAddress;
                 var password = userDTO.Password;
-                var result = await _signInManager.PasswordSignInAsync(userName, password, false, false);
-                Info($"User({userName}), pw({password})");
+                var result = await _signInManager.PasswordSignInAsync(emailAddress, password, false, false);
+                Info($"User({emailAddress}), pw({password})");
                 if (result.Succeeded)
                 {
-                    var user = await _userManager.FindByNameAsync(userName);
+                    var user = await _userManager.FindByNameAsync(emailAddress);
                     var tokenString = await GenerateJSONWebToken(user);
                     Info("succeeded");
                     return Ok(new { token = tokenString});
@@ -91,10 +134,10 @@ namespace BookStore_API.Controllers
                 signingCredentials: credentials);
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-        //private void Error(string message)
-        //{
-        //    _logger.LogError($"{By()}: {message}");
-        //}
+        private void Error(string message)
+        {
+            _logger.LogError($"{By()}: {message}");
+        }
         private void Info(string message)
         {
             _logger.LogInfo($"{By()}: {message}");
@@ -111,14 +154,14 @@ namespace BookStore_API.Controllers
         }
         private ObjectResult InternalError(System.Exception e)
         {
-            _logger.LogError($"{By()}: {e.Message} - {e.InnerException}");
+            Error($"{By()}: {e.Message} - {e.InnerException}");
             return StatusCode(500, "Something went wrong. Please contact the Administrator");
         }
-        //private ObjectResult InternalError(string message)
-        //{
-        //    _logger.LogError(message);
-        //    return StatusCode(500, "Something went wrong. Please contact the Administrator");
-        //}
+        private ObjectResult InternalError(string message)
+        {
+            Error(message);
+            return StatusCode(500, message);
+        }
     }
 
 }
