@@ -1,30 +1,27 @@
-﻿using BookStore_UI.Contracts;
-using BookStore_UI.Static;
+﻿using Blazored.LocalStorage;
+using BookStore_UI.Contracts;
 using BookStore_UI.Models;
+using BookStore_UI.Providers;
+using BookStore_UI.Static;
+using Microsoft.AspNetCore.Components.Authorization;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Blazored.LocalStorage;
-using Microsoft.AspNetCore.Components.Authorization;
-using BookStore_UI.Providers;
 
 namespace BookStore_UI.Service
 {
     public class AuthenticationRepository : IAuthenticationRepository
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly ILocalStorageService _localStorageServive;
+        private readonly ILocalStorageService _localStorageService;
         private readonly AuthenticationStateProvider _authenticationStateProvider;
         public AuthenticationRepository(IHttpClientFactory httpClientFactory
             , ILocalStorageService localStorageService
             , AuthenticationStateProvider authenticationStateProvider)
         {
             _httpClientFactory = httpClientFactory;
-            _localStorageServive = localStorageService;
+            _localStorageService = localStorageService;
             _authenticationStateProvider = authenticationStateProvider;
         }
 
@@ -45,7 +42,7 @@ namespace BookStore_UI.Service
             var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(content);
 
             // Store token
-            await _localStorageServive.SetItemAsync("authToken", tokenResponse.Token);
+            await _localStorageService.SetItemAsync("authToken", tokenResponse.Token);
 
             // Change Authentication State
             await ((ApiAuthenticationStateProvider)_authenticationStateProvider).LogIn();
@@ -57,7 +54,7 @@ namespace BookStore_UI.Service
 
         public async Task Logout()
         {
-            await _localStorageServive.RemoveItemAsync("authToken");
+            await _localStorageService.RemoveItemAsync("authToken");
             //((ApiAuthenticationStateProvider)_authenticationStateProvider).Logout();
         }
 

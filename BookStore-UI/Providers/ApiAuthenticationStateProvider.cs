@@ -1,30 +1,30 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
-using Blazored.LocalStorage;
+﻿using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components.Authorization;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace BookStore_UI.Providers
 {
     public class ApiAuthenticationStateProvider : AuthenticationStateProvider
     {
-        private readonly ILocalStorageService _localStorage;
+        private readonly ILocalStorageService _localStorageService;
         private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler;
 
-        public ApiAuthenticationStateProvider(ILocalStorageService localStorage
+        public ApiAuthenticationStateProvider(ILocalStorageService localStorageService
             , JwtSecurityTokenHandler jwtSecurityTokenHandler)
         {
-            _localStorage = localStorage;
+            _localStorageService = localStorageService;
             _jwtSecurityTokenHandler = jwtSecurityTokenHandler;
         }
         public async override Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             try
             {
-                var savedToken = await _localStorage.GetItemAsync<string>("authToken");
+                var savedToken = await _localStorageService.GetItemAsync<string>("authToken");
                 if (string.IsNullOrWhiteSpace(savedToken))
                 {
                     return NobodyIsLoggedIn();
@@ -33,7 +33,7 @@ namespace BookStore_UI.Providers
                 var expiry = tokenContent.ValidTo;
                 if (expiry < DateTime.Now)
                 {
-                    await _localStorage.RemoveItemAsync("authToken");
+                    await _localStorageService.RemoveItemAsync("authToken");
                     return NobodyIsLoggedIn();
                 }
                 // Get Claims from token and build auth user object
@@ -51,7 +51,7 @@ namespace BookStore_UI.Providers
 
         public async Task LogIn()
         {
-            var savedToken = await _localStorage.GetItemAsync<string>("authToken");
+            var savedToken = await _localStorageService.GetItemAsync<string>("authToken");
             var tokenContent = _jwtSecurityTokenHandler.ReadJwtToken(savedToken);
             var claims = ParseClaims(tokenContent);
             var user = new ClaimsPrincipal(new ClaimsIdentity(claims, "jwt"));

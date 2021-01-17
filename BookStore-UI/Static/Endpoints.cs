@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace BookStore_UI.Static
+﻿namespace BookStore_UI.Static
 {
     public static class Endpoints
     {
