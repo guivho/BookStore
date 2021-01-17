@@ -55,7 +55,7 @@ namespace BookStore_UI.Service
         public async Task Logout()
         {
             await _localStorageService.RemoveItemAsync("authToken");
-            //((ApiAuthenticationStateProvider)_authenticationStateProvider).Logout();
+            ((ApiAuthenticationStateProvider)_authenticationStateProvider).Logout();
         }
 
         public async Task<bool> Register(RegistrationModel user)
