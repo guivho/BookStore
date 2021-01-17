@@ -3,8 +3,8 @@
 @using BookStore_UI.Models
 @using BookStore_UI.Contracts
 
-@inject IAuthenticationRepository _authRepo
-@inject NavigationManager _navMan
+@inject IAuthenticationRepository _authenticationRepository
+@inject NavigationManager _navigationManager
 
 <div class="card">
     <h3 class="card-title">Login</h3>
@@ -41,10 +41,10 @@
 
     private async Task HandleLogin()
     {
-        loggedIn = await _authRepo.Login(loginModel);
+        loggedIn = await _authenticationRepository.Login(loginModel);
         if (loggedIn)
         {
-            _navMan.NavigateTo("/");
+            _navigationManager.NavigateTo("/");
         }
     }
 }
