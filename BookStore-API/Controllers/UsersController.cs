@@ -69,7 +69,13 @@ namespace BookStore_API.Controllers
                     }
                     return InternalError(msg);
                 }
-                Info("Succeeded");
+                Info($"User({emailAddress}), pw({password}) registered");
+                result = await _userManager.AddToRoleAsync(user, "Customer");
+                if(!result.Succeeded)
+                {
+                    return InternalError($"User({emailAddress}), pw({password}) failed to get customer role");
+                }
+                Info($"User({emailAddress}), pw({password}) got customer role");
                 return Ok(new { result.Succeeded });
             }
             catch (System.Exception e)
