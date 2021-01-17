@@ -1,17 +1,7 @@
 ﻿
 <Router AppAssembly="@typeof(Program).Assembly">
     <Found Context="routeData">
-        @* with this extra <CascadingAuthenticationState> tag following error no longer occurs:
-
-        InvalidOperationException: Authorization requires a cascading parameter of type Task<AuthenticationState>. Consider using CascadingAuthenticationState to supply this.
-
-        But then the 'await ((ApiAuthenticationStateProvider)_authenticationStateProvider).LogIn();'
-            no longer does anything.
-        *@
-        @*  <CascadingAuthenticationState>*@
-        <RouteView RouteData="@routeData"
-                   DefaultLayout="@typeof(MainLayout)" />
-        @*  </CascadingAuthenticationState>*@
+        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
     </Found>
     <NotFound>
         <CascadingAuthenticationState>
