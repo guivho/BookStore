@@ -1,4 +1,5 @@
-﻿using BookStore_UI.Contracts;
+﻿using Blazored.LocalStorage;
+using BookStore_UI.Contracts;
 using BookStore_UI.Models;
 using System.Net.Http;
 
@@ -8,9 +9,11 @@ namespace BookStore_UI.Service
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public AuthorRepository(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
+        public AuthorRepository
+            (IHttpClientFactory httpClientFactory, ILocalStorageService localStorageService) 
+            : base(httpClientFactory, localStorageService)
         {
             _httpClientFactory = httpClientFactory;
-        }
+        } 
     }
 }

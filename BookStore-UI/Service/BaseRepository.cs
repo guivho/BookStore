@@ -1,9 +1,11 @@
-﻿using BookStore_UI.Contracts;
+﻿using Blazored.LocalStorage;
+using BookStore_UI.Contracts;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,9 +14,12 @@ namespace BookStore_UI.Service
     public class BaseRepository<T> : IBaseRepository<T> where T : class
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        public BaseRepository(IHttpClientFactory httpClientFactory)
+        private readonly ILocalStorageService _localStorageService;
+        public BaseRepository
+            (IHttpClientFactory httpClientFactory, ILocalStorageService localStorageService)
         {
             _httpClientFactory = httpClientFactory;
+            _localStorageService = localStorageService;
         }
         public async Task<bool> Create(string url, T obj)
         {
@@ -27,7 +32,7 @@ namespace BookStore_UI.Service
                 Content = new StringContent(JsonConvert.SerializeObject(obj), Encoding.UTF8, "application/json")
             };
 
-            var client = _httpClientFactory.CreateClient();
+            var client = await CreateHttpClient();
             HttpResponseMessage response = await client.SendAsync(request);
             if(response.StatusCode == System.Net.HttpStatusCode.Created)
             {
@@ -45,7 +50,7 @@ namespace BookStore_UI.Service
             }
             var request = new HttpRequestMessage(HttpMethod.Delete, url+id);
 
-            var client = _httpClientFactory.CreateClient();
+            var client = await CreateHttpClient();
             HttpResponseMessage response = await client.SendAsync(request);
             if(response.StatusCode == System.Net.HttpStatusCode.NoContent)
             {
@@ -62,7 +67,7 @@ namespace BookStore_UI.Service
             }
             var request = new HttpRequestMessage(HttpMethod.Get, url+id);
 
-            var client = _httpClientFactory.CreateClient();
+            var client = await CreateHttpClient();
             HttpResponseMessage response = await client.SendAsync(request);
 
             if(response.StatusCode == System.Net.HttpStatusCode.OK)
@@ -77,7 +82,7 @@ namespace BookStore_UI.Service
         {
             var request = new HttpRequestMessage(HttpMethod.Get, url);
 
-            var client = _httpClientFactory.CreateClient();
+            var client = await CreateHttpClient();
             HttpResponseMessage response = await client.SendAsync(request);
 
             if(response.StatusCode == System.Net.HttpStatusCode.OK)
@@ -99,13 +104,22 @@ namespace BookStore_UI.Service
                 Content = new StringContent(JsonConvert.SerializeObject(obj), Encoding.UTF8, "application/json")
             };
 
-            var client = _httpClientFactory.CreateClient();
+            var client = await CreateHttpClient();
             HttpResponseMessage response = await client.SendAsync(request);
             if(response.StatusCode == System.Net.HttpStatusCode.NoContent)
             {
                 return true;
             }
             return false; 
+        }
+
+        private async Task<HttpClient> CreateHttpClient()
+        {
+            var client = _httpClientFactory.CreateClient();
+            var token = await _localStorageService.GetItemAsync<string>("authToken");
+            client.DefaultRequestHeaders.Authorization
+                = new AuthenticationHeaderValue("bearer", token);
+            return client;
         }
     }
 }
