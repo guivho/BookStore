@@ -6,7 +6,7 @@ namespace BookStore_UI.Models
 {
     public class Author
     {
-        public int id { get; set; }
+        public int Id { get; set; }
         [Required]
         [DisplayName("First Name")]
         public string Firstname { get; set; }

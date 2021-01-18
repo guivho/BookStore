@@ -8,7 +8,7 @@ namespace BookStore_API.DTOs
 {
     public class AuthorDTO
     {
-        public int id { get; set; }
+        public int Id { get; set; }
         public string Firstname { get; set; }
         public string Lastname { get; set; }
         public string Bio { get; set; }
@@ -28,7 +28,7 @@ namespace BookStore_API.DTOs
     public class AuthorUpdateDTO
     {
         [Required]
-        public int id { get; set; }
+        public int Id { get; set; }
         public string Firstname { get; set; }
         public string Lastname { get; set; }
         public string Bio { get; set; }
