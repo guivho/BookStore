@@ -5,17 +5,18 @@ using System.Net.Http;
 
 namespace BookStore_UI.Service
 {
-    public class AuthorRepository : BaseRepository<Author>, IAuthorRepository
+    public class BookRepository : BaseRepository<Book>, IBookRepository
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILocalStorageService _localStorageService;
 
-        public AuthorRepository
-            (IHttpClientFactory httpClientFactory, ILocalStorageService localStorageService) 
+        public BookRepository(
+            IHttpClientFactory httpClientFactory, 
+            ILocalStorageService localStorageService)
             : base(httpClientFactory, localStorageService)
         {
             _httpClientFactory = httpClientFactory;
             _localStorageService = localStorageService;
-        } 
+        }
     }
 }
