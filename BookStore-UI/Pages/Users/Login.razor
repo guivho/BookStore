@@ -4,14 +4,13 @@
 @inject IAuthenticationRepository _authenticationRepository
 @inject NavigationManager _navigationManager
 
+<h5 class="card-title">Please Login</h5>
 
-<div class="card">
-    @if (!loggedIn)
-    {
-            <FailedAlert Message="Something went wrong with the login." />
-    }
-    <div class="card-body">
-    <h5 class="card-title">Please Login</h5>
+@if (!loggedIn)
+{
+    <FailedAlert Message="Something went wrong with the login attempt." />
+}
+<div class="card-body">
     <EditForm Model="loginModel" OnValidSubmit="HandleLogin">
         <DataAnnotationsValidator />
         <ValidationSummary />
@@ -28,7 +27,6 @@
         </div>
         <button type="submit" class="btn btn-primary btn-block">Login</button>
     </EditForm>
-    </div>
 </div>
 
 

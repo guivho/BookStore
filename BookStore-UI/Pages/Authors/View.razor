@@ -2,6 +2,7 @@
 @inject NavigationManager _navigationManager
 @inject IAuthorRepository _authorRepository
 
+<h5 class="card-title">View Author Details</h5>
 
 @if (Author == null)
 {
@@ -9,47 +10,43 @@
 }
 else
 {
-    <div class="col-md-6">
-        <h5>View Author Details</h5>
-        <table class="table table-responsive">
-            <tr>
-                <td class="text-nowrap">First Name</td>
-                <td>@Author.Firstname</td>
-            </tr>
-            <tr>
-                <td class="text-nowrap">Last Name</td>
-                <td>@Author.Lastname</td>
-            </tr>
-            <tr>
-                <td>Biography</td>
-                <td>@Author.Bio</td>
-            </tr>
-        </table>
-        <br />
+    <EditForm Model="Author">
+        <div class="form-group">
+            <label for="firstname">First Name</label>
+            <InputText @bind-Value="Author.Firstname" class="form-control" id="firstname" readonly />
+        </div>
+        <div class="form-group">
+            <label for="lastname">Last Name</label>
+            <InputText @bind-Value="Author.Lastname" class="form-control" id="lastname" readonly />
+        </div>
+        <div class="form-group">
+            <label for="biography">Biography</label>
+            <InputTextArea @bind-Value="Author.Bio" class="form-control" id="biography" readonly />
+        </div>
+    </EditForm>
 
 
-        @if (Author.Books == null || Author.Books.Count < 1)
-        {
-            <div class="alert alert-dismissible alert-secondary">
-                No Books for this Author.
+    @if (Author.Books == null || Author.Books.Count < 1)
+    {
+        <div class="alert alert-dismissible alert-secondary">
+            No Books for this Author.
+        </div>
+    }
+    else
+    {
+        <div class="card" style="width: 18rem;">
+            <div class="card-header">
+                <h4>Author's Books</h4>
             </div>
-        }
-        else
-        {
-            <div class="card" style="width: 18rem;">
-                <div class="card-header">
-                    <h4>Author's Books</h4>
-                </div>
-                <ul class="list-group list-group-flush">
-                    @foreach (var Book in Author.Books)
-                    {
-                        <li class="list-group-item">@Book.Title - @Book.Price</li>
-                    }
-                </ul>
-            </div>
-        }
-        <BackToAuthorsList />
-    </div>
+            <ul class="list-group list-group-flush">
+                @foreach (var Book in Author.Books)
+                {
+                    <li class="list-group-item">@Book.Title - @Book.Price</li>
+                }
+            </ul>
+        </div>
+    }
+    <BackToAuthorsList />
 }
 
 
