@@ -6,38 +6,39 @@
 @inject IAuthenticationRepository _authenticationRepository
 @inject NavigationManager _navigationManager
 
+
 <div class="card">
-    <h3 class="card-title">Register Now</h3>
     @if (!registrationSucceeded)
     {
         <div class="alert alert-danger">
             <p>Someting went wrong with the registration.</p>
         </div>
     }
-    <div class="card-body">
-        <EditForm Model="RegistrationModel" OnValidSubmit="HandleRegistration">
-            <DataAnnotationsValidator />
-            <ValidationSummary />
-            <div class="form-group">
-                <label for="email">Email address</label>
-                <InputText Id="email" class="form-control" @bind-Value="RegistrationModel.EmailAddress" />
-                <ValidationMessage For="@(() => RegistrationModel.EmailAddress)" />
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <InputText Id="password" type="password" class="form-control"
-                           @bind-Value="RegistrationModel.Password" />
-                <ValidationMessage For="@(() => RegistrationModel.Password)" />
-            </div>
-            <div class="form-group">
-                <label for="confirmpassword">Confirm Password</label>
-                <InputText Id="confirmpassword" type="password" class="form-control"
-                           @bind-Value="RegistrationModel.ConfirmPassword" />
-                <ValidationMessage For="@(() => RegistrationModel.ConfirmPassword)" />
-            </div>
-            <button type="submit" class="btn btn-primary btn-block">Register</button>
-        </EditForm>
-    </div>
+<div class="card-body">
+    <h5 class="card-title">Please Register to Proceed</h5>
+    <EditForm Model="RegistrationModel" OnValidSubmit="HandleRegistration">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="form-group">
+            <label for="email">Email address</label>
+            <InputText Id="email" class="form-control" @bind-Value="RegistrationModel.EmailAddress" />
+            <ValidationMessage For="@(() => RegistrationModel.EmailAddress)" />
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <InputText Id="password" type="password" class="form-control"
+                       @bind-Value="RegistrationModel.Password" />
+            <ValidationMessage For="@(() => RegistrationModel.Password)" />
+        </div>
+        <div class="form-group">
+            <label for="confirmpassword">Confirm Password</label>
+            <InputText Id="confirmpassword" type="password" class="form-control"
+                       @bind-Value="RegistrationModel.ConfirmPassword" />
+            <ValidationMessage For="@(() => RegistrationModel.ConfirmPassword)" />
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Register</button>
+    </EditForm>
+</div>
 </div>
 
 

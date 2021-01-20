@@ -2,74 +2,67 @@
 @inject NavigationManager _navigationManager
 @inject IAuthorRepository _authorRepository
 
-@if (Author == null)
-{
-    <div class="alert alert-dismissible alert-secondary">
-        Loading Data...
-    </div>
-}
-else
-{
-    <div class="col-md-4">
-        <h4>Author Details</h4>
-        <table class="table table-responsive">
-            <tr>
-                <td>First&nbsp;Name</td>
-                <td>@Author.Firstname</td>
-            </tr>
-            <tr>
-                <td>Last&nbsp;Name</td>
-                <td>@Author.Lastname</td>
-            </tr>
-            <tr>
-                <td>Biography</td>
-                <td>@Author.Bio</td>
-            </tr>
-        </table>
-        <a href="/authors/" class="btn btn-primary"><span class="oi oi-arrow-left"></span></a>
-        <br />
+
+    @if (Author == null)
+    {
+        <LoadingAuthorData />
+    }
+    else
+    {
+        <div class="col-md-4">
+            <h5>View Author Details</h5>
+            <table class="table table-responsive">
+                <tr>
+                    <td>First&nbsp;Name</td>
+                    <td>@Author.Firstname</td>
+                </tr>
+                <tr>
+                    <td>Last&nbsp;Name</td>
+                    <td>@Author.Lastname</td>
+                </tr>
+                <tr>
+                    <td>Biography</td>
+                    <td>@Author.Bio</td>
+                </tr>
+            </table>
+            <br />
 
 
-        @if (Author.Books == null || Author.Books.Count < 1)
-        {
-            <div class="alert alert-dismissible alert-secondary">
-                No Books for this Author.
-            </div>
-        }
-        else
-        {
-            <div class="card" style="width: 18rem;">
-                <div class="card-header">
-                    <h4>Author's Books</h4>
+            @if (Author.Books == null || Author.Books.Count < 1)
+            {
+                <div class="alert alert-dismissible alert-secondary">
+                    No Books for this Author.
                 </div>
-                <ul class="list-group list-group-flush">
-                    @foreach (var Book in Author.Books)
-                    {
-                        <li class="list-group-item">@Book.Title - @Book.Price</li>
-                    }
-                </ul>
-            </div>
+            }
+            else
+            {
+                <div class="card" style="width: 18rem;">
+                    <div class="card-header">
+                        <h4>Author's Books</h4>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        @foreach (var Book in Author.Books)
+                        {
+                            <li class="list-group-item">@Book.Title - @Book.Price</li>
+                        }
+                    </ul>
+                </div>
+            }
+            <BackToAuthorsList />
+        </div>
+    }
+
+
+    @code {
+            [Parameter]
+            public string Id { get; set; }
+
+        private Author Author = new Author();
+
+        protected async override Task OnInitializedAsync()
+        {
+            int id = 0;
+            int.TryParse(Id, out id);
+            Author = await _authorRepository.Get(Endpoints.AuthorsEndpoint, id);
         }
-        <button @onclick="BackToList" class="btn btn-outline-secondary"><span class="oi oi-arrow-left"></span> Back to List</button>
-    </div>
-}
-
-
-@code {
-    [Parameter]
-    public string Id { get; set; }
-
-    private Author Author = new Author();
-
-    protected async override Task OnInitializedAsync()
-    {
-        int id = 0;
-        int.TryParse(Id, out id);
-        Author = await _authorRepository.Get(Endpoints.AuthorsEndpoint, id);
     }
-
-    private void BackToList()
-    {
-        _navigationManager.NavigateTo("/authors/");
-    }
-}

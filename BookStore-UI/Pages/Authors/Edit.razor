@@ -1,0 +1,36 @@
+﻿@page "/authors/edit/{Id}"
+@inject NavigationManager _navigationManager
+@inject IAuthorRepository _authorRepository
+
+
+@if (Author == null)
+{
+    <LoadingAuthorData />
+}
+else
+{
+<EditForm Model="Author" OnValidSubmit="EditAuthor">
+
+    <BackToAuthorsList />
+</EditForm>   
+}
+
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private Author Author = new Author();
+
+    protected async override Task OnInitializedAsync()
+    {
+        int id = 0;
+        int.TryParse(Id, out id);
+        Author = await _authorRepository.Get(Endpoints.AuthorsEndpoint, id);
+    }
+
+    private void EditAuthor()
+    {
+
+    }
+}

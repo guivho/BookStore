@@ -1,0 +1,13 @@
+﻿@inject NavigationManager _navigationManager
+
+<button @onclick="GoBack" class="btn btn-outline-secondary"><span class="oi oi-arrow-left"></span> Back to List</button>
+
+@code {
+    [Parameter]
+    public string TargetUrl { get; set; }
+
+    private void GoBack()
+    {
+        _navigationManager.NavigateTo(TargetUrl);
+    }
+}
