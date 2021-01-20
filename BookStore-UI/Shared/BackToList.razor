@@ -1,10 +1,16 @@
-﻿@inject NavigationManager _navigationManager
+﻿
+@inject NavigationManager _navigationManager
 
-<button @onclick="GoBack" class="btn btn-outline-secondary"><span class="oi oi-arrow-left"></span> Back to List</button>
+<button @onclick="GoBack" class="btn btn-outline-secondary">
+    <span class="oi oi-arrow-left"></span>
+    @Message
+</button>
 
 @code {
     [Parameter]
     public string TargetUrl { get; set; }
+    [Parameter]
+    public string Message { get; set; }
 
     private void GoBack()
     {

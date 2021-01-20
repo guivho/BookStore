@@ -8,9 +8,7 @@
 <div class="card">
     @if (!loggedIn)
     {
-        <div class="alert alert-danger">
-            <p>Someting went wrong with the login.</p>
-        </div>
+            <FailedAlert Message="Something went wrong with the login." />
     }
     <div class="card-body">
     <h5 class="card-title">Please Login</h5>

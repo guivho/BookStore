@@ -9,10 +9,34 @@
 }
 else
 {
-<EditForm Model="Author" OnValidSubmit="EditAuthor">
+    @if (!UpdateSuccessful)
+    {
+        <FailedAlert Message="Someting went wrong when saving the author details" />
+    }
+    <EditForm Model="Author" OnValidSubmit="EditAuthor">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <h5>Edit Author Details</h5>
+        <div class="form-group">
+            <label for="firstname">First Name</label>
+            <InputText @bind-Value="Author.Firstname" class="form-control" id="firstname" />
+            <ValidationMessage For="@(() => Author.Firstname)" />
+        </div>
+        <div class="form-group">
+            <label for="lastname">Last Name</label>
+            <InputText @bind-Value="Author.Lastname" class="form-control" id="lastname" />
+            <ValidationMessage For="@(() => Author.Lastname)" />
+        </div>
+        <div class="form-group">
+            <label for="biography">Biography</label>
+            <InputTextArea @bind-Value="Author.Bio" class="form-control" id="biography" />
+            <ValidationMessage For="@(() => Author.Bio)" />
+        </div>
 
-    <BackToAuthorsList />
-</EditForm>   
+        <button type="submit" class="btn btn-primary"><span class="oi oi-pencil" /> Submit Changes</button>
+        <BackToAuthorsList />
+
+    </EditForm>
 }
 
 
@@ -22,6 +46,8 @@ else
 
     private Author Author = new Author();
 
+    private bool UpdateSuccessful = true;
+
     protected async override Task OnInitializedAsync()
     {
         int id = 0;
@@ -29,8 +55,10 @@ else
         Author = await _authorRepository.Get(Endpoints.AuthorsEndpoint, id);
     }
 
-    private void EditAuthor()
+    private async void EditAuthor()
     {
-
+        UpdateSuccessful = await _authorRepository.Update($"{Endpoints.AuthorsEndpoint}{Id}", Author);
+        if (UpdateSuccessful)
+            _navigationManager.NavigateTo("/authors/");
     }
 }
