@@ -3,66 +3,66 @@
 @inject IAuthorRepository _authorRepository
 
 
-    @if (Author == null)
-    {
-        <LoadingAuthorData />
-    }
-    else
-    {
-        <div class="col-md-6">
-            <h5>View Author Details</h5>
-            <table class="table table-responsive">
-                <tr>
-                    <td class="text-nowrap">First Name</td>
-                    <td>@Author.Firstname</td>
-                </tr>
-                <tr>
-                    <td class="text-nowrap">Last Name</td>
-                    <td>@Author.Lastname</td>
-                </tr>
-                <tr>
-                    <td>Biography</td>
-                    <td>@Author.Bio</td>
-                </tr>
-            </table>
-            <br />
+@if (Author == null)
+{
+    <LoadingAuthorData />
+}
+else
+{
+    <div class="col-md-6">
+        <h5>View Author Details</h5>
+        <table class="table table-responsive">
+            <tr>
+                <td class="text-nowrap">First Name</td>
+                <td>@Author.Firstname</td>
+            </tr>
+            <tr>
+                <td class="text-nowrap">Last Name</td>
+                <td>@Author.Lastname</td>
+            </tr>
+            <tr>
+                <td>Biography</td>
+                <td>@Author.Bio</td>
+            </tr>
+        </table>
+        <br />
 
 
-            @if (Author.Books == null || Author.Books.Count < 1)
-            {
-                <div class="alert alert-dismissible alert-secondary">
-                    No Books for this Author.
-                </div>
-            }
-            else
-            {
-                <div class="card" style="width: 18rem;">
-                    <div class="card-header">
-                        <h4>Author's Books</h4>
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        @foreach (var Book in Author.Books)
-                        {
-                            <li class="list-group-item">@Book.Title - @Book.Price</li>
-                        }
-                    </ul>
-                </div>
-            }
-            <BackToAuthorsList />
-        </div>
-    }
-
-
-    @code {
-            [Parameter]
-            public string Id { get; set; }
-
-        private Author Author = new Author();
-
-        protected async override Task OnInitializedAsync()
+        @if (Author.Books == null || Author.Books.Count < 1)
         {
-            int id = 0;
-            int.TryParse(Id, out id);
-            Author = await _authorRepository.Get(Endpoints.AuthorsEndpoint, id);
+            <div class="alert alert-dismissible alert-secondary">
+                No Books for this Author.
+            </div>
         }
+        else
+        {
+            <div class="card" style="width: 18rem;">
+                <div class="card-header">
+                    <h4>Author's Books</h4>
+                </div>
+                <ul class="list-group list-group-flush">
+                    @foreach (var Book in Author.Books)
+                    {
+                        <li class="list-group-item">@Book.Title - @Book.Price</li>
+                    }
+                </ul>
+            </div>
+        }
+        <BackToAuthorsList />
+    </div>
+}
+
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private Author Author = new Author();
+
+    protected async override Task OnInitializedAsync()
+    {
+        int id = 0;
+        int.TryParse(Id, out id);
+        Author = await _authorRepository.Get(Endpoints.AuthorsEndpoint, id);
     }
+}

@@ -11,7 +11,7 @@ else
 {
     @if (!UpdateSuccessful)
     {
-        <FailedAlert Message="Someting went wrong when saving the author details" />
+        <FailedAlert Message="Something went wrong when saving the author details." />
     }
     <EditForm Model="Author" OnValidSubmit="EditAuthor">
         <DataAnnotationsValidator />
@@ -48,17 +48,20 @@ else
 
     private bool UpdateSuccessful = true;
 
+    private int id = 0;
+
     protected async override Task OnInitializedAsync()
     {
-        int id = 0;
         int.TryParse(Id, out id);
         Author = await _authorRepository.Get(Endpoints.AuthorsEndpoint, id);
     }
 
     private async void EditAuthor()
     {
-        UpdateSuccessful = await _authorRepository.Update($"{Endpoints.AuthorsEndpoint}{Id}", Author);
+        UpdateSuccessful = await _authorRepository.Update(Endpoints.AuthorsEndpoint, Author, id);
         if (UpdateSuccessful)
+        {
             _navigationManager.NavigateTo("/authors/");
+        }
     }
 }

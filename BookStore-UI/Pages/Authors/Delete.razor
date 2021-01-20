@@ -1,0 +1,62 @@
+﻿@page "/authors/delete/{Id}"
+@inject NavigationManager _navigationManager
+@inject IAuthorRepository _authorRepository
+
+
+@if (Author == null)
+{
+    <LoadingAuthorData />
+}
+else
+{
+    @if (!DeleteSuccessful)
+    {
+        <FailedAlert Message="Something went wrong when deleting the author." />
+    }
+    <EditForm Model="Author" OnValidSubmit="DeleteAuthor">
+        <h5>Are You Sure You Want to Delete this Author?</h5>
+        <div class="form-group">
+            <label for="firstname">First Name</label>
+            <InputText @bind-Value="Author.Firstname" class="form-control" id="firstname" readonly />
+        </div>
+        <div class="form-group">
+            <label for="lastname">Last Name</label>
+            <InputText @bind-Value="Author.Lastname" class="form-control" id="lastname" readonly />
+        </div>
+        <div class="form-group">
+            <label for="biography">Biography</label>
+            <InputTextArea @bind-Value="Author.Bio" class="form-control" id="biography" readonly />
+        </div>
+
+        <button type="submit" class="btn btn-danger"><span class="oi oi-delete" /> Delete Author</button>
+        <BackToAuthorsList />
+
+    </EditForm>
+}
+
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private Author Author = new Author();
+
+    private bool DeleteSuccessful = true;
+    
+    private int id = 0;
+
+    protected async override Task OnInitializedAsync()
+    {
+        int.TryParse(Id, out id);
+        Author = await _authorRepository.Get(Endpoints.AuthorsEndpoint, id);
+    }
+
+    private async void DeleteAuthor()
+    {
+        DeleteSuccessful = await _authorRepository.Delete(Endpoints.AuthorsEndpoint, id);
+        if (DeleteSuccessful)
+        {
+            _navigationManager.NavigateTo("/authors/");
+        }
+    }
+}
