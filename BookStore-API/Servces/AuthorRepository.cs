@@ -20,9 +20,9 @@ namespace BookStore_API.Servces
             await _db.Authors.AddAsync(entity);
             return await Save();
         }
-        public async Task<bool> doesExist(int id)
+        public async Task<bool> DoesExist(int id)
         {
-            return await _db.Authors.AnyAsync(q => q.id == id);
+            return await _db.Authors.AnyAsync(author => author.Id == id);
         }
 
         public async Task<bool> Delete(Author entity)
@@ -33,13 +33,17 @@ namespace BookStore_API.Servces
 
         public async Task<IList<Author>> FindAll()
         {
-            var authors = await _db.Authors.ToListAsync();
+            var authors = await _db.Authors
+                //.Include(q => q.Books) // we don't need the books when finding all authors
+                .ToListAsync();
             return authors;
         }
 
         public async Task<Author> FindById(int id)
         {
-            var author = await _db.Authors.FindAsync(id);
+            var author = await _db.Authors
+                .Include(q => q.Books)
+                .FirstOrDefaultAsync(q => q.Id == id);
             return author;
         }
 

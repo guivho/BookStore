@@ -5,7 +5,7 @@ namespace BookStore_API.Data
     [Table("books")]
     public partial class Book
     {
-        public int id { get; set; }
+        public int Id { get; set; }
         public string Title { get; set; }
         public int?  Year { get; set; }
         public string Isbn { get; set; }

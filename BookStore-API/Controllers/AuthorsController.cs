@@ -184,10 +184,10 @@ namespace BookStore_API.Controllers
                     Warn($"id {id} < 1 was submitted");
                     return BadRequest(ModelState);
                 }
-                var doesExist = await _authorRepository.doesExist(id);
+                var doesExist = await _authorRepository.DoesExist(id);
                 if (!doesExist)
                 {
-                    Warn($"Unknown author {id}");
+                    Error($"Unknown author {id}");
                     return NotFound();
                 }
                 var author = await _authorRepository.FindById(id);

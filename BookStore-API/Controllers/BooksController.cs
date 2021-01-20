@@ -187,7 +187,7 @@ namespace BookStore_API.Controllers
                     Warn($"id < 1 was submitted");
                     return BadRequest(ModelState);
                 }
-                var doesExist = await _bookRepository.doesExist(id);
+                var doesExist = await _bookRepository.DoesExist(id);
                 if (!doesExist)
                 {
                     Warn($"Unknown book {id}");
@@ -196,7 +196,7 @@ namespace BookStore_API.Controllers
                 var book = await _bookRepository.FindById(id);
                 if (book == null)
                 {
-                    Warn($"Should not occur after previous check!");
+                    Error($"Should not occur after previous check!");
                     return NotFound();
                 }
                 var isSuccess = await _bookRepository.Delete(book);

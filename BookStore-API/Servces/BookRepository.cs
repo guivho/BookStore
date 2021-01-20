@@ -1,9 +1,7 @@
 ﻿using BookStore_API.Contracts;
 using BookStore_API.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BookStore_API.Servces
@@ -22,9 +20,9 @@ namespace BookStore_API.Servces
             return await Save();
         }
 
-        public async Task<bool> doesExist(int id)
+        public async Task<bool> DoesExist(int id)
         {
-            return await _db.Books.AnyAsync(q => q.id == id);
+            return await _db.Books.AnyAsync(q => q.Id == id);
         }
 
 
