@@ -1,4 +1,5 @@
 ﻿@page "/authors/view/{Id}"
+@attribute [Authorize]
 @inject NavigationManager _navigationManager
 @inject IAuthorRepository _authorRepository
 
@@ -6,7 +7,7 @@
 
 @if (Author == null)
 {
-    <LoadingAuthorData />
+    <LoadingMessage Message="Loading Authod Details "/>
 }
 else
 {

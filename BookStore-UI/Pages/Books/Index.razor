@@ -1,11 +1,11 @@
 ﻿@page "/books/"
-
+@attribute [Authorize]
 @* @inject NavigationManager _navigationManager *@
 @inject IBookRepository _bookRepository
 
 @if (Books == null)
 {
-
+    <LoadingMessage Message="Loading Books List" />
 }
 else
 {
@@ -15,31 +15,48 @@ else
             Create New Book
         </a>
 
-        <br />
         <hr />
     </AuthorizeView>
 
 
 
-    @if (Books.Count > 0)
+    @if (Books.Count < -1)
+    {
+        <LoadingMessage Message="There are no books in the database yet" />
+    }
+    else
     {
         <h5 class="card-title">Known Books</h5>
         <table class="table table-responsive">
             <thead>
                 <tr>
+                    <th></th>
                     <th>Title</th>
                     <th>Price</th>
                     <th>Author</th>
-                    <th>Actions</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var book in Books)
                 {
                     <tr>
+                        <td>
+                            <img src="uploads/@book.Image" style="height:100px;width:100px"
+                                 class="img-thumbnail" />
+                        </td>
                         <td>@book.Title</td>
-                        <td>@book.Price</td>
-                        <td>@book.Author.Lastname, @book.Author.Firstname</td>
+                        <td>@string.Format("{0:C}", book.Price)</td>
+                        <td>
+                            @if (book.Author == null)
+                            {
+                                <span class="text-muted">No author specified</span>
+                            }
+                            else
+                            {
+                                <span>@book.Author.Firstname @book.Author.Lastname</span>
+                            }
+                        </td>
                         <td>
                             <a href="/Books/view/@book.Id" class="btn btn-primary">
                                 <span class="oi oi-book"></span>
@@ -65,6 +82,7 @@ else
 
     protected async override Task OnInitializedAsync()
     {
+                
         Books = await _bookRepository.Get(Endpoints.BooksEndpoint);
     }
 
