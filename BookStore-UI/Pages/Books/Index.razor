@@ -1,0 +1,71 @@
+﻿@page "/books/"
+
+@* @inject NavigationManager _navigationManager *@
+@inject IBookRepository _bookRepository
+
+@if (Books == null)
+{
+
+}
+else
+{
+    <AuthorizeView Roles="Administrator">
+        <a href="/books/create/" class="btn btn-primary">
+            <span class="oi oi-plus" />
+            Create New Book
+        </a>
+
+        <br />
+        <hr />
+    </AuthorizeView>
+
+
+
+    @if (Books.Count > 0)
+    {
+        <h5 class="card-title">Known Books</h5>
+        <table class="table table-responsive">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Price</th>
+                    <th>Author</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var book in Books)
+                {
+                    <tr>
+                        <td>@book.Title</td>
+                        <td>@book.Price</td>
+                        <td>@book.Author.Lastname, @book.Author.Firstname</td>
+                        <td>
+                            <a href="/Books/view/@book.Id" class="btn btn-primary">
+                                <span class="oi oi-book"></span>
+                            </a>
+                            <AuthorizeView Roles="Administrator">
+                                <a href="/Books/edit/@book.Id" class="btn btn-warning">
+                                    <span class="oi oi-pencil"></span>
+                                </a>
+                                <a href="/Books/delete/@book.Id" class="btn btn-danger">
+                                    <span class="oi oi-delete"></span>
+                                </a>
+                            </AuthorizeView>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+
+@code {
+    private IList<Book> Books;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Books = await _bookRepository.Get(Endpoints.BooksEndpoint);
+    }
+
+}

@@ -1,4 +1,5 @@
 ﻿@page "/authors/create/"
+
 @attribute [Authorize(Roles = "Administrator")]
 @inject NavigationManager _navigationManager
 @inject IAuthorRepository _authorRepository
@@ -30,7 +31,7 @@
     </div>
 
     <button type="submit" class="btn btn-primary"><span class="oi oi-plus" /> Create Author</button>
-    <BackToAuthorsList />
+    <BackToList TargetUrl="/authors/" Message="Back to Authors List"/>
 
 </EditForm>
 

@@ -1,0 +1,54 @@
+﻿@page "/books/view/{Id}"
+
+@inject NavigationManager _navigationManager
+@inject IBookRepository _bookRepository
+
+<h5 class="card-title">View Book Details</h5>
+
+@if (Book == null)
+{
+    <LoadingData Message="Loading Books List..." />
+}
+else
+{
+    <EditForm Model="Book">
+        <div class="form-group">
+            <label for="title">Title</label>
+            <InputText @bind-Value="Book.Title" class="form-control" id="title" readonly />
+        </div>
+        <div class="form-group">
+            <label for="price">Price</label>
+            <InputText @bind-Value="BookPrice" class="form-control" id="price" readonly />
+        </div>
+        <div class="form-group">
+            <label for="author">Author</label>
+            <InputTextArea @bind-Value="BookAuthor" class="form-control" id="author" readonly />
+        </div>
+    </EditForm>
+
+
+    <BackToList TargetUrl="/books/" Message="Back to Books list." />
+}
+
+
+@code {
+        [Parameter]
+        public string Id { get; set; }
+
+    private Book Book = new Book();
+    private string BookPrice = "";
+    private string BookAuthor = "";
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        int id = 0;
+        int.TryParse(Id, out id);
+        Book = await _bookRepository.Get(Endpoints.BooksEndpoint, id);
+        if (Book != null)
+        {
+            BookPrice = Book.Price.ToString();
+            BookAuthor = $"{Book.Author.Lastname}, {Book.Author.Firstname}";
+        }
+    }
+}

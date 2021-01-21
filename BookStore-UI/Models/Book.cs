@@ -7,7 +7,7 @@ namespace BookStore_UI.Models
 {
     public class Book
     {
-        public int id { get; set; }
+        public int Id { get; set; }
         public string Title { get; set; }
         public int? Year { get; set; }
         public string Isbn { get; set; }

@@ -15,29 +15,29 @@ else
     {
         <FailedAlert Message="Something went wrong when saving the author details." />
     }
-    <EditForm Model="Author" OnValidSubmit="EditAuthor">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
-        <div class="form-group">
-            <label for="firstname">First Name</label>
-            <InputText @bind-Value="Author.Firstname" class="form-control" id="firstname" />
-            <ValidationMessage For="@(() => Author.Firstname)" />
-        </div>
-        <div class="form-group">
-            <label for="lastname">Last Name</label>
-            <InputText @bind-Value="Author.Lastname" class="form-control" id="lastname" />
-            <ValidationMessage For="@(() => Author.Lastname)" />
-        </div>
-        <div class="form-group">
-            <label for="biography">Biography</label>
-            <InputTextArea @bind-Value="Author.Bio" class="form-control" id="biography" />
-            <ValidationMessage For="@(() => Author.Bio)" />
-        </div>
+<EditForm Model="Author" OnValidSubmit="EditAuthor">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label for="firstname">First Name</label>
+        <InputText @bind-Value="Author.Firstname" class="form-control" id="firstname" />
+        <ValidationMessage For="@(() => Author.Firstname)" />
+    </div>
+    <div class="form-group">
+        <label for="lastname">Last Name</label>
+        <InputText @bind-Value="Author.Lastname" class="form-control" id="lastname" />
+        <ValidationMessage For="@(() => Author.Lastname)" />
+    </div>
+    <div class="form-group">
+        <label for="biography">Biography</label>
+        <InputTextArea @bind-Value="Author.Bio" class="form-control" id="biography" />
+        <ValidationMessage For="@(() => Author.Bio)" />
+    </div>
 
-        <button type="submit" class="btn btn-primary"><span class="oi oi-pencil" /> Submit Changes</button>
-        <BackToAuthorsList />
+    <button type="submit" class="btn btn-primary"><span class="oi oi-pencil" /> Submit Changes</button>
+    <BackToList TargetUrl="/authors/" Message="Back to Authors List" />
 
-    </EditForm>
+</EditForm>
 }
 
 
