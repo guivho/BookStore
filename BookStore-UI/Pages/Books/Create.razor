@@ -3,7 +3,7 @@
 
 @inject IAuthorRepository _authorRepository
 @inject IBookRepository _bookRepository
-@*@inject IFileUpload _fileUpload*@
+@inject IFileUpload _fileUpload
 
 @inject NavigationManager _navigationManager
 
@@ -79,17 +79,19 @@ else
     private bool CreateSuccessful = true;
     private IFileListEntry file;
     private IList<Author> Authors;
-    private bool Ok = true;
     private bool isValidFile = true;
     private string imageDataURL;
+    private MemoryStream memoryStream;
 
     private async void CreateBook()
     {
         if (isValidFile)
         {
             var ext = Path.GetExtension(file.Name);
-            var picId = Guid.NewGuid().ToString().Replace("-","");
-            var picName = $"{picId}.{ext}";
+            var picId = Guid.NewGuid().ToString().Replace("-", "");
+            var picName = $"{picId}{ext}";
+
+            await _fileUpload.UploadFile(file, memoryStream, picName);
 
             Book.Image = picName;
             CreateSuccessful = await _bookRepository.Create(Endpoints.BooksEndpoint, Book);
@@ -113,22 +115,23 @@ else
             var name = file.Name.ToLower();
             if (name.Contains("jpg") || name.Contains("jpeg") || name.Contains("png"))
             {
-                var memoryStream = new MemoryStream();
+                memoryStream = new MemoryStream();
                 await file.Data.CopyToAsync(memoryStream);
 
                 var streamReader = new StreamReader(file.Data);
                 var imageBase64Data = Convert.ToBase64String(memoryStream.ToArray());
-                imageDataURL = string.Format("data:image/png,base64,{0}", imageBase64Data);
+                imageDataURL = string.Format("data:image/png;base64,{0}", imageBase64Data);
                 isValidFile = true;
             }
             else
             {
-                isValidFile = false;
                 imageDataURL = string.Empty;
+                isValidFile = false;
             }
         }
         else
         {
+            imageDataURL = string.Empty;
             isValidFile = false;
         }
     }
