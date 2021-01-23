@@ -8,7 +8,7 @@ namespace BookStore_API.DTOs
 {
     public class BookDTO
     {
-        public int id { get; set; }
+        public int Id { get; set; }
         public string Title { get; set; }
         public int? Year { get; set; }
         public string Isbn { get; set; }
@@ -35,7 +35,7 @@ namespace BookStore_API.DTOs
     public class BookUpdateDTO
     {
         [Required]
-        public int id { get; set; }
+        public int Id { get; set; }
         [Required]
         public string Title { get; set; }
         public int? Year { get; set; }

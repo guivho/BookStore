@@ -14,7 +14,7 @@ else
 {
     @if (!DeleteSuccessful)
     {
-        <FailedAlert Message="Something went wrong when deleting the author." />
+        <ErrorMessage Message="Something went wrong when deleting the author." />
     }
     <EditForm Model="Author" OnValidSubmit="DeleteAuthor">
         <div class="form-group">

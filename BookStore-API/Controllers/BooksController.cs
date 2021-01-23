@@ -140,7 +140,7 @@ namespace BookStore_API.Controllers
             try
             {
                 Info($"Book update attempted");
-                if (id < 1 || bookDTO == null || id != bookDTO.id)
+                if (id < 1 || bookDTO == null || id != bookDTO.Id)
                 {
                     Warn($"Empty request, id < 1, or id in url != id in payload");
                     return BadRequest(ModelState);

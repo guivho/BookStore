@@ -11,7 +11,7 @@
 
 @if (!registrationSucceeded)
 {
-    <FailedAlert Message="Something went wrong with the registration." />
+    <ErrorMessage Message="Something went wrong with the registration." />
 }
 <div class="card-body">
     <EditForm Model="RegistrationModel" OnValidSubmit="HandleRegistration">

@@ -7,5 +7,6 @@ namespace BookStore_UI.Contracts
     public interface IFileUpload
     {
         public Task UploadFile(IFileListEntry file, MemoryStream memoryStream, string picName);
+        public void RemoveFile(string picName);
     }
 }

@@ -8,7 +8,7 @@
 
 @if (!CreateSuccessful)
 {
-    <FailedAlert Message="Something went wrong when saving the author details." />
+    <ErrorMessage Message="Something went wrong when saving the author details." />
 }
 
 <EditForm Model="Author" OnValidSubmit="CreateAuthor">

@@ -8,7 +8,7 @@
 
 @if (!loggedIn)
 {
-    <FailedAlert Message="Something went wrong with the login attempt." />
+    <ErrorMessage Message="Something went wrong with the login attempt." />
 }
 <div class="card-body">
     <EditForm Model="loginModel" OnValidSubmit="HandleLogin">

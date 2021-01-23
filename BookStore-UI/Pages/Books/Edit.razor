@@ -1,4 +1,4 @@
-﻿@page "/books/create/"
+﻿@page "/books/edit/{id}"
 @attribute [Authorize(Roles = "Administrator")]
 
 @inject IAuthorRepository _authorRepository
@@ -14,13 +14,21 @@
 <hr />
 
 
-@if (!CreateSuccessful)
+@if (string.IsNullOrWhiteSpace(Id) || int.Parse(Id) < 1)
+{
+    <ErrorMessage Message="Invalid selection. Please try again." />
+}
+else if (!UpdateSuccessful)
 {
     <ErrorMessage Message="Something went wrong when saving the book details." />
 }
+else if (Book == null)
+{
+    <LoadingMessage Message="Loading Book Details" />
+}
 else
 {
-    <EditForm Model="Book" OnValidSubmit="CreateBook">
+    <EditForm Model="Book" OnValidSubmit="UpdateBook">
         <DataAnnotationsValidator />
         <ValidationSummary />
         <div class="form-group">
@@ -67,52 +75,75 @@ else
             {
                 <img src="@imageDataURL" style="height:100px;width:100px" />
             }
+            else if (!string.IsNullOrWhiteSpace(Book.Image))
+            {
+                <img src="uploads/@Book.Image" style="height:100px;width:100px" />
+            }
         </div>
 
-        <button type="submit" class="btn btn-primary"><span class="oi oi-plus" /> Create Book</button>
+        <button type="submit" class="btn btn-primary"><span class="oi oi-plus" /> Submit Changes</button>
         <BackToList TargetUrl="/books/" Message="Back to Books List" />
     </EditForm>
 }
 
 @code {
-    private Book Book = new Book();
-    private bool CreateSuccessful = true;
+
+    [Parameter]
+    public string Id { get; set; }
+    private int id = 0;
+    private Book Book;
+    private Author Author;
+    private bool UpdateSuccessful = true;
     private IFileListEntry file;
     private IList<Author> Authors;
     private bool isValidFile = true;
     private string imageDataURL;
     private MemoryStream memoryStream;
+    private bool isFileChanged = false;
 
-    private async void CreateBook()
+    protected async override Task OnInitializedAsync()
+    {
+        int.TryParse(Id, out id);
+        Book = await _bookRepository.Get(Endpoints.BooksEndpoint, id);
+        if (Book != null && Book.AuthorId != null)
+        {
+            Author = await _authorRepository.Get(Endpoints.AuthorsEndpoint, (int)Book.AuthorId);
+        }
+        Authors = await _authorRepository.Get(Endpoints.AuthorsEndpoint);
+
+    }
+
+    private async void UpdateBook()
     {
         if (isValidFile)
         {
-            if(file!=null)
+            if (file != null)
             {
                 var ext = Path.GetExtension(file.Name);
                 var picId = Guid.NewGuid().ToString().Replace("-", "");
                 var picName = $"{picId}{ext}";
 
+                _fileUpload.RemoveFile(Book.Image);
                 await _fileUpload.UploadFile(file, memoryStream, picName);
 
                 Book.Image = picName;
             }
-
-            CreateSuccessful = await _bookRepository.Create(Endpoints.BooksEndpoint, Book);
-            if (CreateSuccessful)
+            else if (isFileChanged && file == null)
+            {
+                _fileUpload.RemoveFile(Book.Image);
+                Book.Image = string.Empty;
+            }
+            UpdateSuccessful = await _bookRepository.Update(Endpoints.BooksEndpoint, Book, Book.Id);
+            if (UpdateSuccessful)
             {
                 Util.NavigateTo(_navigationManager, "/books/");
             }
         }
     }
 
-    protected async override Task OnInitializedAsync()
-    {
-        Authors = await _authorRepository.Get(Endpoints.AuthorsEndpoint);
-    }
-
     private async Task HandleFileSelection(IFileListEntry[] files)
     {
+        isFileChanged = true;
         file = files.FirstOrDefault();
         if (file != null)
         {

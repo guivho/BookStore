@@ -7,7 +7,7 @@
 
 @if (string.IsNullOrWhiteSpace(Id) || int.Parse(Id) < 1)
 {
-    <FailedAlert Message="Invalid selection. Please try again." />
+    <ErrorMessage Message="Invalid selection. Please try again." />
 }
 else if (Book == null)
 {

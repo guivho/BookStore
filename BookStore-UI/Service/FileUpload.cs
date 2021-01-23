@@ -16,6 +16,17 @@ namespace BookStore_UI.Service
             _webHostEnvironment = webHostEnvironment;
         }
 
+        public void RemoveFile(string picName)
+        {
+            if(picName != null)
+            {
+                var path = $"{_webHostEnvironment.WebRootPath}\\uploads\\{picName}";
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+            }
+        }
 
         public async Task UploadFile(IFileListEntry file, MemoryStream memoryStream, string picName)
         {
@@ -25,10 +36,8 @@ namespace BookStore_UI.Service
 
                 var path = $"{_webHostEnvironment.WebRootPath}\\uploads\\{picName}";
 
-                using (FileStream fileStream = new FileStream(path, FileMode.Create))
-                {
-                    memoryStream.WriteTo(fileStream);
-                }
+                using FileStream fileStream = new FileStream(path, FileMode.Create);
+                memoryStream.WriteTo(fileStream);
             }
             catch (Exception)
             {
