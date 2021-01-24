@@ -35,8 +35,8 @@ else
             <ValidationMessage For="@(() => Author.Bio)" />
         </div>
 
-        <button type="submit" class="btn btn-primary"><span class="oi oi-pencil" /> Submit Changes</button>
-        <BackToList TargetUrl="/authors/" Message="Back to Authors List" />
+        <BackToList TargetUrl="/authors/" />
+        <button type="submit" class="btn btn-outline-primary"><span class="oi oi-check" /></button>
 
     </EditForm>
 }

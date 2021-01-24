@@ -7,7 +7,7 @@
 
 @if (Author == null)
 {
-    <LoadingMessage Message="Loading Authod Details "/>
+    <LoadingMessage Message="Loading Authod Details " />
 }
 else
 {
@@ -48,7 +48,11 @@ else
         </div>
     }
     <br />
-    <BackToList TargetUrl="/authors/" Message="Back to Authors List" />
+    <BackToList TargetUrl="/authors/" />
+    <a href="/authors/edit/@Author.Id" class="btn btn-outline-warning">
+        <span class="oi oi-pencil" /></a>
+    <a href="/authors/delete/@Author.Id" class="btn btn-outline-danger">
+        <span class="oi oi-delete" /></a>
 
 }
 

@@ -3,6 +3,7 @@
 @*@inject NavigationManager _navigationManager*@
 @inject IBookRepository _bookRepository
 
+
 <h5 class="card-title">View Book Details</h5>
 
 @if (string.IsNullOrWhiteSpace(Id) || int.Parse(Id) < 1)
@@ -66,8 +67,14 @@ else
             <h3 class="text-center text-info">@string.Format("{0:C}", @Book.Price)</h3>
         </div>
     </div>
+    <BackToList TargetUrl="/books/" />
+    <a href="/books/edit/@Book.Id" class="btn btn-outline-warning">
+        <span class="oi oi-pencil" />
+    </a>
+    <a href="/books/delete/@Book.Id" class="btn btn-outline-danger">
+        <span class="oi oi-delete" />
+    </a>
 }
-<BackToList TargetUrl="/books/" Message="Back to Books list." />
 
 
 @code {

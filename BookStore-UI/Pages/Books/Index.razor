@@ -10,7 +10,7 @@
 else
 {
     <AuthorizeView Roles="Administrator">
-        <a href="/books/create/" class="btn btn-primary">
+        <a href="/books/create/" class="btn btn-outline-primary">
             <span class="oi oi-plus" />
             Create New Book
         </a>
@@ -60,14 +60,14 @@ else
                             }
                         </td>
                         <td class="text-nowrap">
-                            <a href="/books/view/@book.Id" class="btn btn-primary">
+                            <a href="/books/view/@book.Id" class="btn btn-outline-primary">
                                 <span class="oi oi-book"></span>
                             </a>
                             <AuthorizeView Roles="Administrator">
-                                <a href="/books/edit/@book.Id" class="btn btn-warning">
+                                <a href="/books/edit/@book.Id" class="btn btn-outline-warning">
                                     <span class="oi oi-pencil"></span>
                                 </a>
-                                <a href="/books/delete/@book.Id" class="btn btn-danger">
+                                <a href="/books/delete/@book.Id" class="btn btn-outline-danger">
                                     <span class="oi oi-delete"></span>
                                 </a>
                             </AuthorizeView>

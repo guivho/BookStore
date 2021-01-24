@@ -10,7 +10,7 @@
 else
 {
     <AuthorizeView Roles="Administrator">
-        <a href="/authors/create/" class="btn btn-primary">
+        <a href="/authors/create/" class="btn btn-outline-primary">
             <span class="oi oi-plus" />
             Create New Author
         </a>
@@ -42,14 +42,14 @@ else
                         <td>@author.Firstname</td>
                         <td>@author.Lastname</td>
                         <td>
-                            <a href="/Authors/view/@author.Id" class="btn btn-primary">
+                            <a href="/Authors/view/@author.Id" class="btn btn-outline-primary">
                                 <span class="oi oi-book"></span>
                             </a>
                             <AuthorizeView Roles="Administrator">
-                                <a href="/Authors/edit/@author.Id" class="btn btn-warning">
+                                <a href="/Authors/edit/@author.Id" class="btn btn-outline-warning">
                                     <span class="oi oi-pencil"></span>
                                 </a>
-                                <a href="/Authors/delete/@author.Id" class="btn btn-danger">
+                                <a href="/Authors/delete/@author.Id" class="btn btn-outline-danger">
                                     <span class="oi oi-delete"></span>
                                 </a>
                             </AuthorizeView>
