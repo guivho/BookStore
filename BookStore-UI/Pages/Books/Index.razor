@@ -32,6 +32,7 @@ else
                 <tr>
                     <th></th>
                     <th>Title</th>
+                    <th>ISBN</th>
                     <th>Price</th>
                     <th>Author</th>
                     <th></th>
@@ -46,7 +47,8 @@ else
                                  class="img-thumbnail" />
                         </td>
                         <td>@book.Title</td>
-                        <td>@string.Format("{0:C}", book.Price)</td>
+                        <td>@book.Isbn</td>
+                        <td class="text-nowrap">@string.Format("{0:C}", book.Price)</td>
                         <td>
                             @if (book.Author == null)
                             {
@@ -57,7 +59,7 @@ else
                                 <span>@book.Author.Firstname @book.Author.Lastname</span>
                             }
                         </td>
-                        <td>
+                        <td class="text-nowrap">
                             <a href="/books/view/@book.Id" class="btn btn-primary">
                                 <span class="oi oi-book"></span>
                             </a>

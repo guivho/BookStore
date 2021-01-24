@@ -49,7 +49,7 @@ else
                 </tr>
                 <tr>
                     <td>
-                        <strong>Published Year</strong>
+                        <strong>Published</strong>
                     </td>
                     <td>@Book.Year</td>
                 </tr>
@@ -63,7 +63,7 @@ else
         </div>
         <div class="col-4">
             <img src="uploads/@Book.Image" style="height:300px;width:300px" />
-            <h3 class="text-center text-info">@Book.Price</h3>
+            <h3 class="text-center text-info">@string.Format("{0:C}", @Book.Price)</h3>
         </div>
     </div>
 }

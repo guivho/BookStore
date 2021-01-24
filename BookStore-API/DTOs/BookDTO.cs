@@ -40,6 +40,8 @@ namespace BookStore_API.DTOs
         public string Title { get; set; }
         public int? Year { get; set; }
         [StringLength(500)]
+        [Required]
+        public string Isbn { get; set; }
         public string Summary { get; set; }
         public string Image { get; set; }
         public decimal? Price { get; set; }
