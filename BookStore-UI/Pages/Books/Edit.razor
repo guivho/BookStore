@@ -92,7 +92,7 @@ else
     public string Id { get; set; }
     private int id = 0;
     private Book Book;
-    private Author Author;
+    //private Author Author;
     private bool UpdateSuccessful = true;
     private IFileListEntry file;
     private IList<Author> Authors;
@@ -105,10 +105,10 @@ else
     {
         int.TryParse(Id, out id);
         Book = await _bookRepository.Get(Endpoints.BooksEndpoint, id);
-        if (Book != null && Book.AuthorId != null)
-        {
-            Author = await _authorRepository.Get(Endpoints.AuthorsEndpoint, (int)Book.AuthorId);
-        }
+        //if (Book != null && Book.AuthorId != null)
+        //{
+        //    Author = await _authorRepository.Get(Endpoints.AuthorsEndpoint, (int)Book.AuthorId);
+        //}
         Authors = await _authorRepository.Get(Endpoints.AuthorsEndpoint);
 
     }
