@@ -1,0 +1,91 @@
+﻿@page "/books/"
+@attribute [Authorize]
+@* @inject NavigationManager _navigationManager *@
+@inject IBookRepository _bookRepository
+
+@if (Books == null)
+{
+    <LoadingMessage Message="Loading Books List" />
+}
+else
+{
+    <AuthorizeView Roles="Administrator">
+        <a href="/books/create/" class="btn btn-outline-primary">
+            <span class="oi oi-plus" />
+            Create New Book
+        </a>
+
+        <hr />
+    </AuthorizeView>
+
+
+
+    @if (Books.Count < -1)
+    {
+        <LoadingMessage Message="There are no books in the database yet" />
+    }
+    else
+    {
+        <h5 class="card-title">Known Books</h5>
+        <table class="table table-responsive">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Title</th>
+                    <th>ISBN</th>
+                    <th>Price</th>
+                    <th>Author</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var book in Books)
+                {
+                    <tr>
+                        <td>
+                            <img src="uploads/@book.Image" style="height:50px;width:50px"
+                                 class="img-thumbnail" />
+                        </td>
+                        <td>@book.Title</td>
+                        <td>@book.Isbn</td>
+                        <td class="text-nowrap">@string.Format("{0:C}", book.Price)</td>
+                        <td>
+                            @if (book.Author == null)
+                            {
+                                <span class="text-muted">No author specified</span>
+                            }
+                            else
+                            {
+                                <span>@book.Author.Firstname @book.Author.Lastname</span>
+                            }
+                        </td>
+                        <td class="text-nowrap">
+                            <a href="/books/view/@book.Id" class="btn btn-outline-primary">
+                                <span class="oi oi-book"></span>
+                            </a>
+                            <AuthorizeView Roles="Administrator">
+                                <a href="/books/edit/@book.Id" class="btn btn-outline-warning">
+                                    <span class="oi oi-pencil"></span>
+                                </a>
+                                <a href="/books/delete/@book.Id" class="btn btn-outline-danger">
+                                    <span class="oi oi-delete"></span>
+                                </a>
+                            </AuthorizeView>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+
+@code {
+    private IList<Book> Books;
+
+    protected async override Task OnInitializedAsync()
+    {
+                
+        Books = await _bookRepository.Get(Endpoints.BooksEndpoint);
+    }
+
+}

@@ -1,0 +1,56 @@
+﻿@page "/authors/create/"
+@attribute [Authorize(Roles = "Administrator")]
+
+@inject NavigationManager _navigationManager
+@inject IAuthorRepository _authorRepository
+@inject IToastService _toastService
+
+<h5 class="card-title">Create Author</h5>
+
+@if (!CreateSuccessful)
+{
+    <ErrorMessage Message="Something went wrong when saving the author details." />
+}
+
+<EditForm Model="Author" OnValidSubmit="CreateAuthor">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label for="firstname">First Name</label>
+        <InputText @bind-Value="Author.Firstname" class="form-control" id="firstname" />
+        <ValidationMessage For="@(() => Author.Firstname)" />
+    </div>
+    <div class="form-group">
+        <label for="lastname">Last Name</label>
+        <InputText @bind-Value="Author.Lastname" class="form-control" id="lastname" />
+        <ValidationMessage For="@(() => Author.Lastname)" />
+    </div>
+    <div class="form-group">
+        <label for="biography">Biography</label>
+        <InputTextArea @bind-Value="Author.Bio" class="form-control" id="biography" />
+        <ValidationMessage For="@(() => Author.Bio)" />
+    </div>
+
+    <BackToList TargetUrl="/authors/" />
+    <button type="submit" class="btn btn-outline-primary"><span class="oi oi-check" /></button>
+
+</EditForm>
+
+
+
+@code {
+
+    private Author Author = new Author();
+
+    private bool CreateSuccessful = true;
+
+    private async void CreateAuthor()
+    {
+        CreateSuccessful = await _authorRepository.Create(Endpoints.AuthorsEndpoint, Author);
+        if (CreateSuccessful)
+        {
+            _toastService.ShowSuccess("Author Created.");
+            Util.NavigateTo(_navigationManager, "/authors/");
+        }
+    }
+}

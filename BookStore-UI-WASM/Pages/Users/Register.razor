@@ -1,0 +1,54 @@
+﻿@page "/register"
+
+@using BookStore_UI.Models
+@using BookStore_UI.Contracts
+
+@inject IAuthenticationRepository _authenticationRepository
+@inject NavigationManager _navigationManager
+
+<h5 class="card-title">Please Register to Proceed</h5>
+
+
+@if (!registrationSucceeded)
+{
+    <ErrorMessage Message="Something went wrong with the registration." />
+}
+<div class="card-body">
+    <EditForm Model="RegistrationModel" OnValidSubmit="HandleRegistration">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="form-group">
+            <label for="email">Email address</label>
+            <InputText Id="email" class="form-control" @bind-Value="RegistrationModel.EmailAddress" />
+            <ValidationMessage For="@(() => RegistrationModel.EmailAddress)" />
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <InputText Id="password" type="password" class="form-control"
+                        @bind-Value="RegistrationModel.Password" />
+            <ValidationMessage For="@(() => RegistrationModel.Password)" />
+        </div>
+        <div class="form-group">
+            <label for="confirmpassword">Confirm Password</label>
+            <InputText Id="confirmpassword" type="password" class="form-control"
+                        @bind-Value="RegistrationModel.ConfirmPassword" />
+            <ValidationMessage For="@(() => RegistrationModel.ConfirmPassword)" />
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Register</button>
+    </EditForm>
+</div>
+
+
+@code {
+    private RegistrationModel RegistrationModel = new RegistrationModel();
+    private bool registrationSucceeded = true;
+
+    private async Task HandleRegistration()
+    {
+        registrationSucceeded = await _authenticationRepository.Register(RegistrationModel);
+        if (registrationSucceeded)
+        {
+            _navigationManager.NavigateTo("/login");
+        }
+    }
+}
