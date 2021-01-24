@@ -1,8 +1,9 @@
 ﻿@page "/authors/create/"
-
 @attribute [Authorize(Roles = "Administrator")]
+
 @inject NavigationManager _navigationManager
 @inject IAuthorRepository _authorRepository
+@inject IToastService _toastService
 
 <h5 class="card-title">Create Author</h5>
 
@@ -48,6 +49,7 @@
         CreateSuccessful = await _authorRepository.Create(Endpoints.AuthorsEndpoint, Author);
         if (CreateSuccessful)
         {
+            _toastService.ShowSuccess("Author Created.");
             Util.NavigateTo(_navigationManager, "/authors/");
         }
     }

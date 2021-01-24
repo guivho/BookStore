@@ -4,6 +4,7 @@
 @inject IBookRepository _bookRepository
 @inject IAuthorRepository _authorRepository
 @inject IFileUpload _fileUpload
+@inject IToastService _toastService
 
 
 <h5 class="card-title">Are You Sure You Want to Delete this Book?</h5>
@@ -73,7 +74,8 @@ else
         DeleteSuccessful = await _bookRepository.Delete(Endpoints.BooksEndpoint, id);
         if (DeleteSuccessful)
         {
-            Util.NavigateTo(_navigationManager, "/authors/");
+            _toastService.ShowSuccess("Book Deleted.");
+            Util.NavigateTo(_navigationManager, "/books/");
         }
     }
 }

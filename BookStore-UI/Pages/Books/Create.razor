@@ -6,8 +6,7 @@
 @inject IFileUpload _fileUpload
 
 @inject NavigationManager _navigationManager
-
-@using System.IO
+@inject IToastService _toastService
 
 
 <h3>Create Book</h3>
@@ -87,7 +86,7 @@ else
     {
         if (isValidFile)
         {
-            if(file!=null)
+            if (file != null)
             {
                 var ext = Path.GetExtension(file.Name);
                 var picId = Guid.NewGuid().ToString().Replace("-", "");
@@ -101,6 +100,7 @@ else
             CreateSuccessful = await _bookRepository.Create(Endpoints.BooksEndpoint, Book);
             if (CreateSuccessful)
             {
+                _toastService.ShowSuccess("Book Created.");
                 Util.NavigateTo(_navigationManager, "/books/");
             }
         }

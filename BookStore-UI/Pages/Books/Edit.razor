@@ -4,11 +4,8 @@
 @inject IAuthorRepository _authorRepository
 @inject IBookRepository _bookRepository
 @inject IFileUpload _fileUpload
-
+@inject IToastService _toastService
 @inject NavigationManager _navigationManager
-
-@using System.IO
-
 
 <h3>Create Book</h3>
 <hr />
@@ -130,6 +127,7 @@ else
             UpdateSuccessful = await _bookRepository.Update(Endpoints.BooksEndpoint, Book, Book.Id);
             if (UpdateSuccessful)
             {
+                _toastService.ShowSuccess("Book Details Updated.");
                 Util.NavigateTo(_navigationManager, "/books/");
             }
         }
