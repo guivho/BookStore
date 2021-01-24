@@ -1,15 +1,15 @@
 ﻿using Blazored.LocalStorage;
-using BookStore_UI.Contracts;
-using BookStore_UI.Models;
-using BookStore_UI.Providers;
-using BookStore_UI.Static;
+using BookStore_UI.WASM.Contracts;
+using BookStore_UI.WASM.Models;
+using BookStore_UI.WASM.Providers;
+using BookStore_UI.WASM.Static;
 using Microsoft.AspNetCore.Components.Authorization;
 using Newtonsoft.Json;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BookStore_UI.Service
+namespace BookStore_UI.WASM.Service
 {
     public class AuthenticationRepository : IAuthenticationRepository
     {

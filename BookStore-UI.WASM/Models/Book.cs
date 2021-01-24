@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BookStore_UI.Models
+namespace BookStore_UI.WASM.Models
 {
     public class Book
     {

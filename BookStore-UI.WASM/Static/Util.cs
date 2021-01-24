@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace BookStore_UI.Static
+namespace BookStore_UI.WASM.Static
 {
     public static class Util
     {

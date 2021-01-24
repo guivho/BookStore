@@ -7,7 +7,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace BookStore_UI.Providers
+namespace BookStore_UI.WASM.Providers
 {
     public class ApiAuthenticationStateProvider : AuthenticationStateProvider
     {

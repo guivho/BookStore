@@ -1,9 +1,9 @@
 ﻿using Blazored.LocalStorage;
-using BookStore_UI.Contracts;
-using BookStore_UI.Models;
+using BookStore_UI.WASM.Contracts;
+using BookStore_UI.WASM.Models;
 using System.Net.Http;
 
-namespace BookStore_UI.Service
+namespace BookStore_UI.WASM.Service
 {
     public class BookRepository : BaseRepository<Book>, IBookRepository
     {

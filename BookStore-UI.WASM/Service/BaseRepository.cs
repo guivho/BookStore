@@ -1,5 +1,5 @@
 ﻿using Blazored.LocalStorage;
-using BookStore_UI.Contracts;
+using BookStore_UI.WASM.Contracts;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BookStore_UI.Service
+namespace BookStore_UI.WASM.Service
 {
     public class BaseRepository<T> : IBaseRepository<T> where T : class
     {

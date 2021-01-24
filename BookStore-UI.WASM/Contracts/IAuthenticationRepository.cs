@@ -1,7 +1,7 @@
-﻿using BookStore_UI.Models;
+﻿using BookStore_UI.WASM.Models;
 using System.Threading.Tasks;
 
-namespace BookStore_UI.Contracts
+namespace BookStore_UI.WASM.Contracts
 {
     public interface IAuthenticationRepository
     {

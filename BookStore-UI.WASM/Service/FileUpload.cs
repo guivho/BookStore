@@ -1,12 +1,13 @@
 ﻿using BlazorInputFile;
-using BookStore_UI.Contracts;
-using Microsoft.AspNetCore.Hosting;
+using BookStore_UI.WASM.Contracts;
+//using Microsoft.AspNetCore.Hosting;
 using System;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace BookStore_UI.Service
+namespace BookStore_UI.WASM.Service
 {
+    /*
     public class FileUpload : IFileUpload
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
@@ -45,4 +46,5 @@ namespace BookStore_UI.Service
             }
         }
     }
+    */
 }

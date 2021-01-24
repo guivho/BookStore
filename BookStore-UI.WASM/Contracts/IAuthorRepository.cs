@@ -1,6 +1,6 @@
-﻿using BookStore_UI.Models;
+﻿using BookStore_UI.WASM.Models;
 
-namespace BookStore_UI.Contracts
+namespace BookStore_UI.WASM.Contracts
 {
     public interface IAuthorRepository : IBaseRepository<Author>
     {

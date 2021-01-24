@@ -2,7 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 
-namespace BookStore_UI.Contracts
+namespace BookStore_UI.WASM.Contracts
 {
     public interface IFileUpload
     {

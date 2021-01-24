@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace BookStore_UI.Contracts
+namespace BookStore_UI.WASM.Contracts
 {
     public interface IBaseRepository<T> where T: class
     {
