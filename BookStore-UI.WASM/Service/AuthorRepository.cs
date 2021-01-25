@@ -7,14 +7,14 @@ namespace BookStore_UI.WASM.Service
 {
     public class AuthorRepository : BaseRepository<Author>, IAuthorRepository
     {
-        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly HttpClient _httpClient;
         private readonly ILocalStorageService _localStorageService;
 
         public AuthorRepository
-            (IHttpClientFactory httpClientFactory, ILocalStorageService localStorageService) 
-            : base(httpClientFactory, localStorageService)
+            (HttpClient httpClient, ILocalStorageService localStorageService) 
+            : base(httpClient, localStorageService)
         {
-            _httpClientFactory = httpClientFactory;
+            _httpClient = httpClient;
             _localStorageService = localStorageService;
         } 
     }

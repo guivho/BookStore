@@ -5,17 +5,13 @@ using BookStore_UI.WASM.Providers;
 using BookStore_UI.WASM.Service;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace BookStore_UI.WASM.WASM
+namespace BookStore_UI.WASM
 {
     public class Program
     {
