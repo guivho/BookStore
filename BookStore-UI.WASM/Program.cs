@@ -30,6 +30,7 @@ namespace BookStore_UI.WASM
             builder.Services.AddTransient<IAuthorRepository, AuthorRepository>();
             builder.Services.AddTransient<IBookRepository, BookRepository>();
             //builder.Services.AddTransient<IFileUpload, FileUpload>();
+            builder.Services.AddAuthorizationCore();
 
 
             await builder.Build().RunAsync();
