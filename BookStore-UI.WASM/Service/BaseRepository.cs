@@ -22,21 +22,24 @@ namespace BookStore_UI.WASM.Service
         }
         public async Task<bool> Create(string url, T obj)
         {
-            AddBearerTokenToHttpClient();
+            _httpClient.DefaultRequestHeaders.Authorization
+                = new AuthenticationHeaderValue("bearer", await GetBearerToken());
             HttpResponseMessage response = await _httpClient.PostAsJsonAsync<T>(url, obj);
             return response.StatusCode == System.Net.HttpStatusCode.Created;
         }
 
         public async Task<bool> Delete(string url, int id)
         {
-            AddBearerTokenToHttpClient();
+            _httpClient.DefaultRequestHeaders.Authorization
+                = new AuthenticationHeaderValue("bearer", await GetBearerToken());
             HttpResponseMessage response = await _httpClient.DeleteAsync(url + id);
             return response.StatusCode == System.Net.HttpStatusCode.NoContent;
         }
 
         public async Task<T> Get(string url, int id)
         {
-            AddBearerTokenToHttpClient();
+            _httpClient.DefaultRequestHeaders.Authorization
+                = new AuthenticationHeaderValue("bearer", await GetBearerToken());
             return await _httpClient.GetFromJsonAsync<T>(url + id);
         }
 
@@ -44,8 +47,8 @@ namespace BookStore_UI.WASM.Service
         {
             try
             {
-                AddBearerTokenToHttpClient();
-                Debug.WriteLine($"(From Get)DefaultRequestHeaders.Authorization=\r\"{_httpClient.DefaultRequestHeaders.Authorization}\"");
+                _httpClient.DefaultRequestHeaders.Authorization
+                    = new AuthenticationHeaderValue("bearer", await GetBearerToken());
                 return await _httpClient.GetFromJsonAsync<IList<T>>(url);
             }
             catch (Exception e)
@@ -61,18 +64,15 @@ namespace BookStore_UI.WASM.Service
             {
                 return false;
             }
-            AddBearerTokenToHttpClient();
+            _httpClient.DefaultRequestHeaders.Authorization
+                = new AuthenticationHeaderValue("bearer", await GetBearerToken());
             HttpResponseMessage response = await _httpClient.PutAsJsonAsync<T>(url + id, obj);
             return response.StatusCode == System.Net.HttpStatusCode.NoContent;
         }
 
-        private async void AddBearerTokenToHttpClient()
+        private async Task<string> GetBearerToken()
         {
-            var token = await _localStorageService.GetItemAsync<string>("authToken");
-            Debug.WriteLine($"token=\"{token}\"");
-            _httpClient.DefaultRequestHeaders.Authorization
-                = new AuthenticationHeaderValue("bearer", token);
-            Debug.WriteLine($"(in AddBearerTokenToHttpClient) DefaultRequestHeaders.Authorization=\r\"{_httpClient.DefaultRequestHeaders.Authorization}\"");
+            return await _localStorageService.GetItemAsync<string>("authToken");
         }
     }
 }
