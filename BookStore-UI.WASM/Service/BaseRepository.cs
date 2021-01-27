@@ -2,6 +2,7 @@
 using BookStore_UI.WASM.Contracts;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -44,10 +45,12 @@ namespace BookStore_UI.WASM.Service
             try
             {
                 AddBearerTokenToHttpClient();
+                Debug.WriteLine($"(From Get)DefaultRequestHeaders.Authorization=\r\"{_httpClient.DefaultRequestHeaders.Authorization}\"");
                 return await _httpClient.GetFromJsonAsync<IList<T>>(url);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Debug.WriteLine(e.Message);
                 return null;
             }
         }
@@ -66,8 +69,10 @@ namespace BookStore_UI.WASM.Service
         private async void AddBearerTokenToHttpClient()
         {
             var token = await _localStorageService.GetItemAsync<string>("authToken");
+            Debug.WriteLine($"token=\"{token}\"");
             _httpClient.DefaultRequestHeaders.Authorization
                 = new AuthenticationHeaderValue("bearer", token);
+            Debug.WriteLine($"(in AddBearerTokenToHttpClient) DefaultRequestHeaders.Authorization=\r\"{_httpClient.DefaultRequestHeaders.Authorization}\"");
         }
     }
 }
