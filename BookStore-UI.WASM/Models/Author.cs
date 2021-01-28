@@ -20,5 +20,9 @@ namespace BookStore_UI.WASM.Models
 
         public virtual IList<Book> Books { get; set; }
 
+        public override string ToString()
+        {
+            return System.Text.Json.JsonSerializer.Serialize(this);
+        }
     }
 }

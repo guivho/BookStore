@@ -132,7 +132,6 @@ namespace BookStore_API.Controllers
         [HttpPut("{id}")]
         [Authorize(Roles = "Administrator")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Update(int id, [FromBody] BookUpdateDTO bookDTO)
@@ -172,7 +171,6 @@ namespace BookStore_API.Controllers
         /// <returns></returns>
         [HttpDelete("{id:int}")]
         [Authorize(Roles = "Administrator")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

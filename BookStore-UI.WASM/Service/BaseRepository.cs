@@ -3,11 +3,13 @@ using BookStore_UI.WASM.Contracts;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace BookStore_UI.WASM.Service
@@ -28,11 +30,13 @@ namespace BookStore_UI.WASM.Service
             {
                 return false;
             }
-            
+
             _httpClient.DefaultRequestHeaders.Authorization
                 = new AuthenticationHeaderValue("bearer", await GetBearerToken());
+            DebugAuthorizationHeader("Create", obj.ToString(), _httpClient);
             HttpResponseMessage response = await _httpClient.PostAsJsonAsync<T>(url, obj);
-            
+            DebugResponseStatusCode("Create", response.StatusCode, HttpStatusCode.Created);
+
             return response.StatusCode == System.Net.HttpStatusCode.Created;
         }
 
@@ -40,7 +44,9 @@ namespace BookStore_UI.WASM.Service
         {
             _httpClient.DefaultRequestHeaders.Authorization
                 = new AuthenticationHeaderValue("bearer", await GetBearerToken());
+            Debug.WriteLine($"Delete: id={id} \"{_httpClient.DefaultRequestHeaders.Authorization}\"");
             HttpResponseMessage response = await _httpClient.DeleteAsync(url + id);
+            DebugResponseStatusCode("Delete", response.StatusCode, HttpStatusCode.NoContent);
 
             return response.StatusCode == System.Net.HttpStatusCode.NoContent;
         }
@@ -49,7 +55,7 @@ namespace BookStore_UI.WASM.Service
         {
             _httpClient.DefaultRequestHeaders.Authorization
                 = new AuthenticationHeaderValue("bearer", await GetBearerToken());
-            return await _httpClient.GetFromJsonAsync<T>(url+id);
+            return await _httpClient.GetFromJsonAsync<T>(url + id);
         }
 
         public async Task<IList<T>> Get(string url)
@@ -72,17 +78,37 @@ namespace BookStore_UI.WASM.Service
             {
                 return false;
             }
-  
+
             _httpClient.DefaultRequestHeaders.Authorization
                 = new AuthenticationHeaderValue("bearer", await GetBearerToken());
-            HttpResponseMessage response = await _httpClient.PostAsJsonAsync<T>(url+id, obj);
+            DebugAuthorizationHeader("Update", obj.ToString(), _httpClient);
 
-            return response.StatusCode == System.Net.HttpStatusCode.Created;
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync<T>(url + id, obj);
+            DebugResponseStatusCode("Update", response.StatusCode, HttpStatusCode.NoContent);
+
+            return response.StatusCode == HttpStatusCode.NoContent;
         }
 
         private async Task<string> GetBearerToken()
         {
-            return await _localStorageService.GetItemAsync<string>("authToken");
+            var token = await _localStorageService.GetItemAsync<string>("authToken");
+            return token;
         }
-    }
+
+        [ConditionalAttribute("DEBUG")]
+        private void DebugResponseStatusCode(string method, HttpStatusCode httpStatusCode, HttpStatusCode requiredStatusCode)
+        {
+            Debug.WriteLine($"{method} response.StatusCode => " +
+                $" {(int)httpStatusCode} {httpStatusCode}" +
+                $" Ok={httpStatusCode == requiredStatusCode}");
+
+        }
+
+        [ConditionalAttribute("DEBUG")]
+        private void DebugAuthorizationHeader(string method, string obj, HttpClient httpClient)
+        {
+            //Debug.WriteLine($"{method}: {obj} \"{_httpClient.DefaultRequestHeaders.Authorization}\"");
+            Debug.WriteLine($"{method}: {obj}");
+        }
+    }       
 }
