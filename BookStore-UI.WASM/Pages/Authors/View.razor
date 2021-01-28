@@ -2,7 +2,6 @@
 @attribute [Authorize]
 @inject NavigationManager _navigationManager
 @inject IAuthorRepository _authorRepository
-@inject IToastService _toastService;
 
 <h5 class="card-title">View Author Details</h5>
 
@@ -69,6 +68,5 @@ else
         int id = 0;
         int.TryParse(Id, out id);
         Author = await _authorRepository.Get(Endpoints.AuthorsEndpoint, id);
-        _toastService.ShowInfo($"Viewing {Author.Firstname} {Author.Lastname}");
     }
 }

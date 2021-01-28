@@ -1,7 +1,7 @@
 ﻿@page "/authors/"
 @attribute [Authorize]
+@* @inject NavigationManager _navigationManager *@
 @inject IAuthorRepository _authorRepository
-@*@inject HttpClient _httpClient*@
 
 @if (Authors == null)
 {
@@ -67,8 +67,6 @@ else
     protected async override Task OnInitializedAsync()
     {
         Authors = await _authorRepository.Get(Endpoints.AuthorsEndpoint);
-        //what could have been done with HttpClent
-        //Authors = await _httpClient.GetFromJsonAsync<IList<Author>>(Endpoints.AuthorsEndpoint);
     }
 
 }
