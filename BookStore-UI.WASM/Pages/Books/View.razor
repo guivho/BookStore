@@ -2,6 +2,7 @@
 @attribute [Authorize]
 @*@inject NavigationManager _navigationManager*@
 @inject IBookRepository _bookRepository
+@inject IToastService _toastService;
 
 
 <h5 class="card-title">View Book Details</h5>
@@ -89,6 +90,7 @@ else
         if (int.TryParse(Id, out id))
         {
             Book = await _bookRepository.Get(Endpoints.BooksEndpoint, id);
+            _toastService.ShowInfo($"Viewing {Book.Title}");
         }
     }
 }
