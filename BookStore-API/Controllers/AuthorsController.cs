@@ -130,7 +130,7 @@ namespace BookStore_API.Controllers
         /// <param name="id"></param>
         /// <param name="authorDTO"></param>
         /// <returns></returns>
-        [HttpPatch("{id}")]
+        [HttpPut("{id}")]
         [Authorize(Roles = "Administrator")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

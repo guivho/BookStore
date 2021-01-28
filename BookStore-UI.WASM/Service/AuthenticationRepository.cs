@@ -6,6 +6,7 @@ using BookStore_UI.WASM.Static;
 using Microsoft.AspNetCore.Components.Authorization;
 using Newtonsoft.Json;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,27 +14,22 @@ namespace BookStore_UI.WASM.Service
 {
     public class AuthenticationRepository : IAuthenticationRepository
     {
-        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly HttpClient _httpClient;
         private readonly ILocalStorageService _localStorageService;
         private readonly AuthenticationStateProvider _authenticationStateProvider;
-        public AuthenticationRepository(IHttpClientFactory httpClientFactory
+        public AuthenticationRepository(HttpClient httpClient
             , ILocalStorageService localStorageService
             , AuthenticationStateProvider authenticationStateProvider)
         {
-            _httpClientFactory = httpClientFactory;
+            _httpClient = httpClient;
             _localStorageService = localStorageService;
             _authenticationStateProvider = authenticationStateProvider;
         }
 
         public async Task<bool> Login(LoginModel user)
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, Endpoints.LoginEndpoint)
-            {
-                Content = new StringContent(JsonConvert.SerializeObject(user)
-                , Encoding.UTF8, "application/json")
-            };
-            var client = _httpClientFactory.CreateClient();
-            HttpResponseMessage response = await client.SendAsync(request);
+            var response = await _httpClient.PostAsJsonAsync(Endpoints.LoginEndpoint, user);
+            
             if (!response.IsSuccessStatusCode)
             {
                 return false;
@@ -47,8 +43,10 @@ namespace BookStore_UI.WASM.Service
             // Change Authentication State
             await ((ApiAuthenticationStateProvider)_authenticationStateProvider).LogIn();
 
-            client.DefaultRequestHeaders.Authorization =
+            // Not realy needed as we add it before every call
+            _httpClient.DefaultRequestHeaders.Authorization =
                 new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", tokenResponse.Token);
+
             return true;
         }
 
@@ -60,13 +58,7 @@ namespace BookStore_UI.WASM.Service
 
         public async Task<bool> Register(RegistrationModel user)
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, Endpoints.RegisterEndpoint)
-            {
-                Content = new StringContent(JsonConvert.SerializeObject(user)
-                , Encoding.UTF8, "application/json")
-            };
-            var client = _httpClientFactory.CreateClient();
-            HttpResponseMessage response = await client.SendAsync(request);
+            var response = await _httpClient.PostAsJsonAsync(Endpoints.RegisterEndpoint, user);
             return response.IsSuccessStatusCode;
         }
     }
