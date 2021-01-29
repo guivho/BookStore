@@ -46,13 +46,30 @@ namespace BookStore_API.Controllers
             {
                 Info($"Attempted GetBooks");
                 var books = await _bookRepository.FindAll();
-                var response = _mapper.Map<IList<BookDTO>>(books);
+                var bookDTOs = _mapper.Map<IList<BookDTO>>(books);
+                foreach (var bookDTO in bookDTOs)
+                {
+                    SetBookFile(bookDTO);
+                }
                 Info($"Successfully got all books");
-                return Ok(response);
+                return Ok(bookDTOs);
             }
             catch (Exception e)
             {
                 return InternalError(e);
+            }
+        }
+
+        private void SetBookFile(BookDTO bookDTO)
+        {
+            if (!string.IsNullOrEmpty(bookDTO.Image))
+            {
+                var imgPath = GetImagePath(bookDTO.Image);
+                if (System.IO.File.Exists(imgPath))
+                {
+                    var imgBytes = System.IO.File.ReadAllBytes(imgPath);
+                    bookDTO.File = Convert.ToBase64String(imgBytes);
+                }
             }
         }
 
@@ -77,15 +94,7 @@ namespace BookStore_API.Controllers
                     return NotFound();
                 }
                 var bookDTO = _mapper.Map<BookDTO>(book);
-                if(!string.IsNullOrEmpty(bookDTO.Image))
-                {
-                    var imgPath = GetImagePath(bookDTO.Image);
-                    if(System.IO.File.Exists(imgPath))
-                    {
-                        var imgBytes = System.IO.File.ReadAllBytes(imgPath);
-                        bookDTO.File = Convert.ToBase64String(imgBytes);
-                    }
-                }
+                SetBookFile(bookDTO);
                 Info($"Successfully got book {id}");
                 return Ok(bookDTO);
             }

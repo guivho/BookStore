@@ -43,7 +43,9 @@ else
                 {
                     <tr>
                         <td>
-                            <img src="uploads/@book.Image" style="height:50px;width:50px"
+                            <img src="@string.Format(
+                                           "data:image/png;base64,{0}", book.File)" 
+                                 style="height:50px;width:50px"
                                  class="img-thumbnail" />
                         </td>
                         <td>@book.Title</td>
