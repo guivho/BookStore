@@ -3,6 +3,7 @@ using BookStore_API.Contracts;
 using BookStore_API.Data;
 using BookStore_API.DTOs;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -23,12 +24,14 @@ namespace BookStore_API.Controllers
         private readonly IBookRepository _bookRepository;
         private readonly ILoggerService _logger;
         private readonly IMapper _mapper;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public BooksController(IBookRepository bookRepository, ILoggerService logger, IMapper mapper)
+        public BooksController(IBookRepository bookRepository, ILoggerService logger, IMapper mapper, IWebHostEnvironment webHostEnvironment)
         {
             _bookRepository = bookRepository;
             _logger = logger;
             _mapper = mapper;
+            _webHostEnvironment  = webHostEnvironment;
         }
         /// <summary>
         /// Get all Books
@@ -73,9 +76,18 @@ namespace BookStore_API.Controllers
                     Warn($"No book {id}");
                     return NotFound();
                 }
-                var response = _mapper.Map<BookDTO>(book);
+                var bookDTO = _mapper.Map<BookDTO>(book);
+                if(!string.IsNullOrEmpty(bookDTO.Image))
+                {
+                    var imgPath = GetImagePath(bookDTO.Image);
+                    if(System.IO.File.Exists(imgPath))
+                    {
+                        var imgBytes = System.IO.File.ReadAllBytes(imgPath);
+                        bookDTO.File = Convert.ToBase64String(imgBytes);
+                    }
+                }
                 Info($"Successfully got book {id}");
-                return Ok(response);
+                return Ok(bookDTO);
             }
             catch (Exception e)
             {
@@ -111,7 +123,16 @@ namespace BookStore_API.Controllers
                 var book = _mapper.Map<Book>(bookDTO);
                 var isSuccess = await _bookRepository.Create(book);
                 if (!isSuccess)
+                {
                     return InternalError($"{By()}Book {book} creation failed.");
+                }
+                // note that File is not included in book, only in the DTO
+                if(!string.IsNullOrEmpty(bookDTO.File))
+                {
+                    var imgPath = GetImagePath(bookDTO.Image);
+                    var imageBytes = Convert.FromBase64String(bookDTO.File);
+                    System.IO.File.WriteAllBytes(imgPath, imageBytes);
+                }
                 Info($"Book created");
                 return Created("Create", new { book });
 
@@ -211,6 +232,13 @@ namespace BookStore_API.Controllers
 
         }
 
+        private string GetImagePath(string fileName)
+            => ($"{_webHostEnvironment.ContentRootPath}/uploads/{fileName}"); 
+        // is same as:
+        //private string GetImagePath(string fileName)
+        //{
+        //    return $"{_webHostEnvironment.ContentRootPath}/uploads/{fileName}"; 
+        //}
         private void Error(string message)
         {
             _logger.LogError($"{By()}: {message}");
