@@ -83,7 +83,7 @@ namespace BookStore_UI.WASM.Service
                 = new AuthenticationHeaderValue("bearer", await GetBearerToken());
             DebugAuthorizationHeader("Update", obj.ToString(), _httpClient);
 
-            HttpResponseMessage response = await _httpClient.PostAsJsonAsync<T>(url + id, obj);
+            HttpResponseMessage response = await _httpClient.PutAsJsonAsync<T>(url + id, obj);
             DebugResponseStatusCode("Update", response.StatusCode, HttpStatusCode.NoContent);
 
             return response.StatusCode == HttpStatusCode.NoContent;
