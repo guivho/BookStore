@@ -3,7 +3,6 @@
 
 @inject IAuthorRepository _authorRepository
 @inject IBookRepository _bookRepository
-@inject IFileUpload _fileUpload
 @inject IToastService _toastService
 @inject NavigationManager _navigationManager
 
@@ -74,7 +73,7 @@ else
             }
             else if (!string.IsNullOrWhiteSpace(Book.Image))
             {
-                <img src="uploads/@Book.Image" style="height:100px;width:100px" />
+                <img src="@string.Format("data:image/png;base64,{0}", Book.File)" style="height:100px;width:100px" />
             }
         </div>
 
@@ -112,19 +111,17 @@ else
             {
                 var ext = Path.GetExtension(file.Name);
                 var picId = Guid.NewGuid().ToString().Replace("-", "");
-                var picName = $"{picId}{ext}";
-
-                _fileUpload.RemoveFile(Book.Image);
-                await _fileUpload.UploadFile(file, memoryStream, picName);
-
-                Book.Image = picName;
+                Book.Image = $"{picId}{ext}";
+                Book.File = Convert.ToBase64String(memoryStream.ToArray());
             }
             else if (isFileChanged && file == null)
             {
-                _fileUpload.RemoveFile(Book.Image);
                 Book.Image = string.Empty;
             }
-            UpdateSuccessful = await _bookRepository.Update(Endpoints.BooksEndpoint, Book, Book.Id);
+
+            UpdateSuccessful = await _bookRepository.Update
+                (Endpoints.BooksEndpoint, Book, Book.Id);
+
             if (UpdateSuccessful)
             {
                 _toastService.ShowSuccess("Book Details Updated.");

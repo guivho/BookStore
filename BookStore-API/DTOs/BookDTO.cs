@@ -13,9 +13,9 @@ namespace BookStore_API.DTOs
         public int? Year { get; set; }
         public string Isbn { get; set; }
         public string Summary { get; set; }
-        public string Image { get; set; }
+        public string Image { get; set; } // eigenlijk fileName
         public decimal? Price { get; set; }
-        public string File { get; set; }
+        public string File { get; set; } // base64 image bytes transfer field
         public int? AuthorId { get; set; }
         public virtual AuthorDTO Author { get; set; }
     }

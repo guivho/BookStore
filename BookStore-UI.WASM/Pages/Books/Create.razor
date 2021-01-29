@@ -89,9 +89,7 @@ else
             {
                 var ext = Path.GetExtension(file.Name);
                 var picId = Guid.NewGuid().ToString().Replace("-", "");
-                var picName = $"{picId}{ext}";
-
-                Book.Image = picName;
+                Book.Image = $"{picId}{ext}";
                 Book.File = Convert.ToBase64String(memoryStream.ToArray());
             }
 

@@ -159,22 +159,42 @@ namespace BookStore_API.Controllers
         {
             try
             {
-                Info($"Book update attempted");
+                Info($"Book update attempted for id {id}");
                 if (id < 1 || bookDTO == null || id != bookDTO.Id)
                 {
-                    Warn($"Empty request, id < 1, or id in url != id in payload");
+                    Warn($"Update failed (bad id {id})");
                     return BadRequest(ModelState);
+                }
+                var doesExist = await _bookRepository.DoesExist(id);
+                if(!doesExist)
+                {
+                    Warn($"Failed to retrieve book with id {id}.");
+                    return NotFound();
                 }
                 if (!ModelState.IsValid)
                 {
                     Warn($"Invalid modelstate '{ModelState}'");
                     return BadRequest(ModelState);
                 }
+                var oldImage = await _bookRepository.GetImageFileName(id);
                 var book = _mapper.Map<Book>(bookDTO);
                 var isSuccess = await _bookRepository.Update(book);
                 if (!isSuccess)
+                {
                     return InternalError($"{By()}Book {id} '{book}' update failed.");
-                Info($"Book updated");
+                }
+                if (!bookDTO.Image.Equals(oldImage)
+                    && System.IO.File.Exists(GetImagePath(oldImage)))
+                {
+                        System.IO.File.Delete(GetImagePath(oldImage));
+                }
+                if(!string.IsNullOrEmpty(bookDTO.File))
+                {
+                    var imageBytes = Convert.FromBase64String(bookDTO.File);
+                    System.IO.File.WriteAllBytes
+                        (GetImagePath(bookDTO.Image), imageBytes);
+                }
+                Info($"Book with id {id} updated");
                 return NoContent();
 
             }
