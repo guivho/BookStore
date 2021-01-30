@@ -17,5 +17,9 @@ namespace BookStore_UI.Models
         [Required]
         public int? AuthorId { get; set; }
         public virtual Author Author { get; set; }
+        public override string ToString()
+        {
+            return System.Text.Json.JsonSerializer.Serialize(this);
+        }
     }
 }

@@ -63,7 +63,7 @@ else
         </div>
         <div class="form-group">
             <label for="cover">Book Cover Image</label>
-            @*<InputFile OnChange="HandleFileSelection" />*@
+            <InputFile OnChange="HandleFileSelection" />
             @if (!isValidFile)
             {
                 <ErrorMessage Message="Please select a jpg/jpeg/png file or leave field empty" />
@@ -78,7 +78,7 @@ else
             }
         </div>
 
-        <BackToList TargetUrl="/books/"  />
+        <BackToList TargetUrl="/books/" />
         <button type="submit" class="btn btn-outline-primary"><span class="oi oi-check" /></button>
     </EditForm>
 }
@@ -90,11 +90,11 @@ else
     private int id = 0;
     private Book Book;
     private bool UpdateSuccessful = true;
-    private IFileListEntry file;
+    private IBrowserFile file;
     private IList<Author> Authors;
     private bool isValidFile = true;
     private string imageDataURL;
-    private MemoryStream memoryStream;
+    private Stream stream;
     private bool isFileChanged = false;
 
     protected async override Task OnInitializedAsync()
@@ -110,20 +110,20 @@ else
         {
             if (file != null)
             {
+                _fileUpload.RemoveFile(Book.Image);
+                
                 var ext = Path.GetExtension(file.Name);
                 var picId = Guid.NewGuid().ToString().Replace("-", "");
-                var picName = $"{picId}{ext}";
 
-                _fileUpload.RemoveFile(Book.Image);
-                await _fileUpload.UploadFile(file, memoryStream, picName);
-
-                Book.Image = picName;
+                Book.Image = $"{picId}{ext}";
+                await _fileUpload.UploadFile(stream, Book.Image);
             }
             else if (isFileChanged && file == null)
             {
                 _fileUpload.RemoveFile(Book.Image);
                 Book.Image = string.Empty;
             }
+            Book.Author = null;
             UpdateSuccessful = await _bookRepository.Update(Endpoints.BooksEndpoint, Book, Book.Id);
             if (UpdateSuccessful)
             {
@@ -133,20 +133,20 @@ else
         }
     }
 
-    private async Task HandleFileSelection(IFileListEntry[] files)
+    private async Task HandleFileSelection(InputFileChangeEventArgs e)
     {
-        isFileChanged = true;
-        file = files.FirstOrDefault();
+        file = e.File;
         if (file != null)
         {
-            var name = file.Name.ToLower();
-            if (name.Contains("jpg") || name.Contains("jpeg") || name.Contains("png"))
+            var ext = Path.GetExtension(file.Name).ToLower();
+            if (ext.Contains("jpg") || ext.Contains("jpeg") || ext.Contains("png"))
             {
-                memoryStream = new MemoryStream();
-                await file.Data.CopyToAsync(memoryStream);
+                stream = file.OpenReadStream();
 
-                var streamReader = new StreamReader(file.Data);
-                var imageBase64Data = Convert.ToBase64String(memoryStream.ToArray());
+                var resizedImageFile = await file.RequestImageFileAsync("image/png", 100, 100);
+                var buffer = new byte[resizedImageFile.Size];
+                await resizedImageFile.OpenReadStream().ReadAsync(buffer);
+                var imageBase64Data = Convert.ToBase64String(buffer);
                 imageDataURL = string.Format("data:image/png;base64,{0}", imageBase64Data);
                 isValidFile = true;
             }

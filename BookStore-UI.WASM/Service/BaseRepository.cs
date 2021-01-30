@@ -98,9 +98,9 @@ namespace BookStore_UI.WASM.Service
         [ConditionalAttribute("DEBUG")]
         private void DebugResponseStatusCode(string method, HttpStatusCode httpStatusCode, HttpStatusCode requiredStatusCode)
         {
-            Debug.WriteLine($"{method} response.StatusCode => " +
-                $" {(int)httpStatusCode} {httpStatusCode}" +
-                $" Ok={httpStatusCode == requiredStatusCode}");
+            Debug.WriteLine($"\"{method}\" response.StatusCode => " +
+                $" \"{(int)httpStatusCode} {httpStatusCode}\"" +
+                $" \"Ok={httpStatusCode == requiredStatusCode}\"");
 
         }
 
@@ -108,7 +108,7 @@ namespace BookStore_UI.WASM.Service
         private void DebugAuthorizationHeader(string method, string obj, HttpClient httpClient)
         {
             //Debug.WriteLine($"{method}: {obj} \"{_httpClient.DefaultRequestHeaders.Authorization}\"");
-            Debug.WriteLine($"{method}: {obj}");
+            Debug.WriteLine($"\"{method}\": \"{obj}\"");
         }
     }       
 }

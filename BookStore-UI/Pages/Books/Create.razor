@@ -57,7 +57,7 @@ else
         </div>
         <div class="form-group">
             <label for="cover">Book Cover Image</label>
-            @*<InputFile OnChange="HandleFileSelection" />*@
+            <InputFile OnChange="HandleFileSelection" />
             @if (!isValidFile)
             {
                 <ErrorMessage Message="Please select a jpg/jpeg/png file or leave field empty" />
@@ -76,11 +76,11 @@ else
 @code {
     private Book Book = new Book();
     private bool CreateSuccessful = true;
-    private IFileListEntry file;
+    private IBrowserFile file;
     private IList<Author> Authors;
     private bool isValidFile = true;
     private string imageDataURL;
-    private MemoryStream memoryStream;
+    private Stream stream;
 
     private async void CreateBook()
     {
@@ -92,7 +92,7 @@ else
                 var picId = Guid.NewGuid().ToString().Replace("-", "");
                 var picName = $"{picId}{ext}";
 
-                await _fileUpload.UploadFile(file, memoryStream, picName);
+                await _fileUpload.UploadFile(stream, picName);
 
                 Book.Image = picName;
             }
@@ -111,19 +111,20 @@ else
         Authors = await _authorRepository.Get(Endpoints.AuthorsEndpoint);
     }
 
-    private async Task HandleFileSelection(IFileListEntry[] files)
+    private async Task HandleFileSelection(InputFileChangeEventArgs e)
     {
-        file = files.FirstOrDefault();
+        file = e.File;
         if (file != null)
         {
-            var name = file.Name.ToLower();
-            if (name.Contains("jpg") || name.Contains("jpeg") || name.Contains("png"))
+            var ext = Path.GetExtension(file.Name).ToLower();
+            if (ext.Contains("jpg") || ext.Contains("jpeg") || ext.Contains("png"))
             {
-                memoryStream = new MemoryStream();
-                await file.Data.CopyToAsync(memoryStream);
+                stream = file.OpenReadStream();
 
-                var streamReader = new StreamReader(file.Data);
-                var imageBase64Data = Convert.ToBase64String(memoryStream.ToArray());
+                var resizedImageFile = await file.RequestImageFileAsync("image/png", 100, 100);
+                var buffer = new byte[resizedImageFile.Size];
+                await resizedImageFile.OpenReadStream().ReadAsync(buffer);
+                var imageBase64Data = Convert.ToBase64String(buffer);
                 imageDataURL = string.Format("data:image/png;base64,{0}", imageBase64Data);
                 isValidFile = true;
             }

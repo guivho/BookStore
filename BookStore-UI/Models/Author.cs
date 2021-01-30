@@ -19,6 +19,9 @@ namespace BookStore_UI.Models
         public string Bio { get; set; }
 
         public virtual IList<Book> Books { get; set; }
-
+        public override string ToString()
+        {
+            return System.Text.Json.JsonSerializer.Serialize(this);
+        }
     }
 }

@@ -2,6 +2,8 @@
 using BookStore_UI.Contracts;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -30,14 +32,10 @@ namespace BookStore_UI.Service
                 Content = new StringContent(JsonConvert.SerializeObject(obj), Encoding.UTF8, "application/json")
             };
 
-            var client = await CreateHttpClient();
+            var client = await CreateHttpClient("create", obj.ToString());
             HttpResponseMessage response = await client.SendAsync(request);
-            if(response.StatusCode == System.Net.HttpStatusCode.Created)
-            {
-                return true;
-            }
-            return false; 
-
+            DebugResponseStatusCode("create", response.StatusCode, HttpStatusCode.Created);
+            return response.StatusCode == HttpStatusCode.Created;
         }
 
         public async Task<bool> Delete(string url, int id)
@@ -48,13 +46,10 @@ namespace BookStore_UI.Service
             }
             var request = new HttpRequestMessage(HttpMethod.Delete, url+id);
 
-            var client = await CreateHttpClient();
+            var client = await CreateHttpClient("delete", id.ToString());
             HttpResponseMessage response = await client.SendAsync(request);
-            if(response.StatusCode == System.Net.HttpStatusCode.NoContent)
-            {
-                return true;
-            }
-            return false; 
+            DebugResponseStatusCode("delete", response.StatusCode, HttpStatusCode.NoContent);
+            return response.StatusCode == HttpStatusCode.NoContent;
         }
 
         public async Task<T> Get(string url, int id)
@@ -65,10 +60,10 @@ namespace BookStore_UI.Service
             }
             var request = new HttpRequestMessage(HttpMethod.Get, url+id);
 
-            var client = await CreateHttpClient();
+            var client = await CreateHttpClient("get", id.ToString());
             HttpResponseMessage response = await client.SendAsync(request);
 
-            if(response.StatusCode == System.Net.HttpStatusCode.OK)
+            if(response.StatusCode == HttpStatusCode.OK)
             {
                 var content = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<T>(content);
@@ -80,10 +75,10 @@ namespace BookStore_UI.Service
         {
             var request = new HttpRequestMessage(HttpMethod.Get, url);
 
-            var client = await CreateHttpClient();
+            var client = await CreateHttpClient("get", "all");
             HttpResponseMessage response = await client.SendAsync(request);
 
-            if(response.StatusCode == System.Net.HttpStatusCode.OK)
+            if(response.StatusCode == HttpStatusCode.OK)
             {
                 var content = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<IList<T>>(content);
@@ -97,27 +92,40 @@ namespace BookStore_UI.Service
             {
                 return false;
             }
-            var request = new HttpRequestMessage(HttpMethod.Patch, url+id)
+            var request = new HttpRequestMessage(HttpMethod.Put, url+id)
             {
                 Content = new StringContent(JsonConvert.SerializeObject(obj), Encoding.UTF8, "application/json")
             };
 
-            var client = await CreateHttpClient();
+            var client = await CreateHttpClient("update", obj.ToString());
             HttpResponseMessage response = await client.SendAsync(request);
-            if(response.StatusCode == System.Net.HttpStatusCode.NoContent)
-            {
-                return true;
-            }
-            return false; 
+            DebugResponseStatusCode("update", response.StatusCode, HttpStatusCode.NoContent);
+            return response.StatusCode == HttpStatusCode.NoContent;
         }
 
-        private async Task<HttpClient> CreateHttpClient()
+        private async Task<HttpClient> CreateHttpClient(string method, string obj)
         {
             var client = _httpClientFactory.CreateClient();
             var token = await _localStorageService.GetItemAsync<string>("authToken");
             client.DefaultRequestHeaders.Authorization
                 = new AuthenticationHeaderValue("bearer", token);
+            DebugAuthorizationHeader(method, obj, client);
             return client;
+        }
+
+        [ConditionalAttribute("DEBUG")]
+        private void DebugResponseStatusCode(string method, HttpStatusCode httpStatusCode, HttpStatusCode requiredStatusCode)
+        {
+            Debug.WriteLine($"\"{method}\" response.StatusCode => " +
+                $" \"{(int)httpStatusCode} {httpStatusCode}\"" +
+                $" \"Ok={httpStatusCode == requiredStatusCode}\"");
+        }
+
+        [ConditionalAttribute("DEBUG")]
+        private void DebugAuthorizationHeader(string method, string obj, HttpClient httpClient)
+        {
+            //Debug.WriteLine($"{method}: {obj} \"{httpClient.DefaultRequestHeaders.Authorization}\"");
+            Debug.WriteLine($"{method}: {obj}");
         }
     }
 }

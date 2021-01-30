@@ -20,7 +20,7 @@ namespace BookStore_UI.Service
         {
             if(picName != null)
             {
-                var path = $"{_webHostEnvironment.WebRootPath}\\uploads\\{picName}";
+                var path = $"{_webHostEnvironment.WebRootPath}/uploads/{picName}";
                 if (File.Exists(path))
                 {
                     File.Delete(path);
@@ -28,16 +28,21 @@ namespace BookStore_UI.Service
             }
         }
 
-        public async Task UploadFile(IFileListEntry file, MemoryStream memoryStream, string picName)
+        public async Task UploadFile(Stream stream, string picName)
         {
             try
             {
-                await file.Data.CopyToAsync(memoryStream);
-
-                var path = $"{_webHostEnvironment.WebRootPath}\\uploads\\{picName}";
-
-                using FileStream fileStream = new FileStream(path, FileMode.Create);
-                memoryStream.WriteTo(fileStream);
+                var path = $"{_webHostEnvironment.WebRootPath}/uploads/{picName}";
+                var buffer = new byte[4 * 1096];
+                int bytesRead;
+                double totalRead = 0;
+                
+                using var fileStream = new FileStream(path, FileMode.Create);
+                while ((bytesRead = await stream.ReadAsync(buffer)) != 0)
+                {
+                    totalRead += bytesRead;
+                    await fileStream.WriteAsync(buffer);
+                }
             }
             catch (Exception)
             {
