@@ -62,7 +62,7 @@ else
         </div>
         <div class="form-group">
             <label for="cover">Book Cover Image</label>
-            <InputFile OnChange="HandleFileSelection" />
+            @*<InputFile OnChange="HandleFileSelection" />*@
             @if (!isValidFile)
             {
                 <ErrorMessage Message="Please select a jpg/jpeg/png file or leave field empty" />
