@@ -2,7 +2,11 @@
 {
     public static class Endpoints
     {
+#if DEBUG
         public static string BaseUrl = "https://localhost:44361/api/";
+#else
+        public static string BaseUrl = "";
+#endif
         public static string AuthorsEndpoint = $"{BaseUrl}authors/";
         public static string BooksEndpoint = $"{BaseUrl}books/";
 
