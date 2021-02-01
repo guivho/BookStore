@@ -5,7 +5,7 @@
 #if DEBUG
         public static string BaseUrl = "https://localhost:44361/api/";
 #else
-        public static string BaseUrl = "";
+        public static string BaseUrl = "https://bookstore-api20210131111843.azurewebsites.net/";
 #endif        
         public static string AuthorsEndpoint = $"{BaseUrl}authors/";
         public static string BooksEndpoint = $"{BaseUrl}books/";

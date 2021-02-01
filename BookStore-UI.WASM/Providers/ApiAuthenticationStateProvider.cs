@@ -12,13 +12,11 @@ namespace BookStore_UI.WASM.Providers
     public class ApiAuthenticationStateProvider : AuthenticationStateProvider
     {
         private readonly ILocalStorageService _localStorageService;
-        private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler;
+        private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
 
-        public ApiAuthenticationStateProvider(ILocalStorageService localStorageService
-            , JwtSecurityTokenHandler jwtSecurityTokenHandler)
+        public ApiAuthenticationStateProvider(ILocalStorageService localStorageService)
         {
             _localStorageService = localStorageService;
-            _jwtSecurityTokenHandler = jwtSecurityTokenHandler;
         }
         public async override Task<AuthenticationState> GetAuthenticationStateAsync()
         {
